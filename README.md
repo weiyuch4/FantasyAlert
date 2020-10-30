@@ -1,1 +1,1 @@
-# side-project
+# NBA live notifications
