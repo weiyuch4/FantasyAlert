@@ -1,30 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-// import { MyStack, HomeScreen, ProfileScreen } from './index';
-import SearchApp from './SearchBar';
+import { createDrawerNavigation, createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
+import HomeScreen from './HomeScreen';
+
+const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
-    <View style={{ width: 375, height: 175, backgroundColor: '#1D3557' }}>
-      <StatusBar style="auto" />
-      <SearchApp style={{ backgroundColor: '#457B9D' }}/>
-      <Text style={{
-        color: '#F1FAEE', 
-        fontSize: 24, 
-        fontWeight: 'bold', 
-        left: 14,
-        top: 21
-      }}>ON</Text>
-    </View>
+    <NavigationContainer>
+      <Drawer.Navigator
+        initialRouteName="Home"
+        drawerStyle={{
+          backgroundColor: '#2B5085'
+        }}
+        drawerContentOptions={{
+          labelStyle: {color: '#F1FAEE', fontSize: 22, fontWeight: "bold"}
+        }}
+      >
+        <Drawer.Screen name="Home" component={HomeScreen} />
+      </Drawer.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});
