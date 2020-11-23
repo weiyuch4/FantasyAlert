@@ -1,7 +1,6 @@
 import React from 'react';
 import { Platform } from 'react-native';
-import { SearchBar } from 'react-native-elements';
-import { Icon } from 'react-native-elements';
+import { SearchBar, Icon } from 'react-native-elements';
 
 export default class SearchApp extends React.Component {
   state = {
