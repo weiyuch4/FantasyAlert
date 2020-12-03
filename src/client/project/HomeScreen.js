@@ -3,7 +3,7 @@ import React from 'react';
 import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
 import SearchApp from './SearchBar';
 
-export default function HomeScreen({ navigation }) {
+const HomeScreen = ({ navigation }) => {
   return (
     <View>
       <View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
@@ -67,3 +67,5 @@ const styles = StyleSheet.create({
     paddingTop: 10
   },
 });
+
+export default HomeScreen;

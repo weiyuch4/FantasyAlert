@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	createDrawerNavigator,
 	DrawerContentScrollView,
 	DrawerItem,
 } from '@react-navigation/drawer';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 
-function CustomDrawerContent(props) {
+const CustomDrawerContent = (props) => {
 	return (
 		<SafeAreaProvider>
 			<DrawerContentScrollView {...props}>
@@ -33,7 +33,23 @@ function CustomDrawerContent(props) {
 
 const Drawer = createDrawerNavigator();
 
-export default function App() {
+const App = (props) => {
+	
+	const [apiResponse, setApiResponse] = useState("");
+
+	const callAPI = () => {
+		fetch("http://192.168.1.65:3000/testAPI")
+			.then(res => res.json())
+			.then(res => setApiResponse({ apiResponse: res }))
+		
+	};
+
+	useEffect(() => {
+		callAPI();
+	}, []);
+
+	console.log(apiResponse);
+
 	return (
 		<NavigationContainer>
 			<Drawer.Navigator
@@ -56,3 +72,5 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 	},
 });
+
+export default App;
