@@ -2,8 +2,25 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
 import SearchApp from './SearchBar';
+import getAllPlayerStatus from './Player';
 
 const HomeScreen = ({ navigation }) => {
+
+  const players = getAllPlayerStatus(),
+        playerOn = [],
+        playerOff = [],
+        playerStatus = Object.values(players);
+  for (const player in players) {
+    if (players[player].status === 'on') {
+      playerOn.push(player);
+    } else if (players[player].status === 'off') {
+      playerOff.push(player);
+    } else {
+      console.log('end of game');
+    }
+  }
+  console.log(playerStatus[0]);
+
   return (
     <View>
       <View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
@@ -13,13 +30,13 @@ const HomeScreen = ({ navigation }) => {
       <View style={{ width: '100%', height: '100%', backgroundColor: '#1D3557'}}>
         <SectionList
           sections={[
-            {title: 'ON', data: ['Player1', 'Player2', 'Player3']},
-            {title: 'OFF', data: ['Player4', 'Player5']},
+            {title: 'ON', data: playerOn},
+            {title: 'OFF', data: playerOff},
           ]}
-          renderItem={({item}) => 
+          renderItem={({item, index}) => 
             <View style={styles.playerView}>
               <Text style={styles.item}>{item}</Text>
-              <Text style={styles.itemDetail}>4th Quarter - 2:20</Text>
+              <Text style={styles.itemDetail}> {playerStatus[index].quarter} - {playerStatus[index].time}</Text>
               <Image style={styles.playerIcon} source={require('./logos/nba/lakers.png')}/>
             </View>
           }

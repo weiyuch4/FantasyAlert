@@ -34,11 +34,11 @@ const CustomDrawerContent = (props) => {
 const Drawer = createDrawerNavigator();
 
 const App = (props) => {
-	
+	/*
 	const [apiResponse, setApiResponse] = useState("");
 
 	const callAPI = () => {
-		fetch("http://192.168.1.65:3000/testAPI")
+		fetch(`${process.env.API_URL}/testAPI`)
 			.then(res => res.json())
 			.then(res => setApiResponse({ apiResponse: res }))
 		
@@ -47,8 +47,8 @@ const App = (props) => {
 	useEffect(() => {
 		callAPI();
 	}, []);
-
-	console.log(apiResponse);
+	*/
+	// console.log(apiResponse);
 
 	return (
 		<NavigationContainer>
