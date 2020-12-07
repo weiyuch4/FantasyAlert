@@ -19,7 +19,6 @@ const HomeScreen = ({ navigation }) => {
       console.log('end of game');
     }
   }
-  console.log(playerStatus[0]);
 
   return (
     <View>
