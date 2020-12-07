@@ -18,9 +18,7 @@ const fetchData = async () => {
 const getResults = async () => {
   try {
       const data = await fetchData();
-
       const $ = cheerio.load(data);
-      
       return $;
   } catch (err) {
       console.error(err);

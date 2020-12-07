@@ -47,7 +47,11 @@ const getAllPlayerStatus = async (allPlayers) => {
 
   do {
     const playerStatus = await getPlayerStatus(allPlayers[num]);
-    players[allPlayers[num]] = playerStatus;
+
+    // playerStatus === {} if game not started
+    if (playerStatus !== {}) {
+      players[allPlayers[num]] = playerStatus;
+    }
     num++;
   } while (num < allPlayers.length);
 

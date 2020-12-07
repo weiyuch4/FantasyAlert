@@ -11,6 +11,8 @@ var testAPIRouter = require('./routes/testAPI');
 var testScraperRouter = require('./routes/testScraper');
 var testPlayerRouter = require('./routes/testPlayer');
 var testGameRouter = require('./routes/testGame');
+var testTeamUrlRouter = require('./routes/testTeamUrl');
+var testRosterRouter = require('./routes/testRoster');
 
 var app = express();
 
@@ -31,6 +33,8 @@ app.use('/testAPI', testAPIRouter);
 app.use('/testScraper', testScraperRouter);
 app.use('/testPlayer', testPlayerRouter);
 app.use('/testGame', testGameRouter);
+app.use('/testTeamUrl', testTeamUrlRouter);
+app.use('/testRoster', testRosterRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
