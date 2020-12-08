@@ -31,27 +31,33 @@ const getTeamsUrl = async () => {
   const $ = await getTeamsResults();
 
   const teamNames = [],
-        teamUrl = {},
+        teamInfo = {},
         string = 'https://www.espn.com/';
         leftSubstring = 'href=\"',
         rightSubstring = '\">Roster</a>';
 
-  $('.mt3', '.layout__column').find('div > section > div').each(function (i) {
-    $(this).find('a > h2').each(function(index, element) {
+  $('.mt3', '.layout__column').find('div > section').each(function (i) {
+    $(this).find('div > a > h2').each(function(index, element) {
       const teamName = $(this).html();
       teamNames.push(teamName);
     })
-    $(this).find('div > span').each(function(index, element) {
+    $(this).find('div > div > span').each(function(index, element) {
       if ($(this).find('a').html() === 'Roster') {
         const left = $(this).html().indexOf(leftSubstring) + 7,
               right = $(this).html().indexOf(rightSubstring),
               urlHtml = string.concat($(this).html().slice(left, right));
-        teamUrl[teamNames[i]] = urlHtml;
+        teamInfo[teamNames[i]] = [urlHtml, `./logo/${i}.png`];
       }
     })
+    /*
+    $(this).find('a > img').each(function(index, element) {
+      const teamLogo = $(this).attr('src');
+      teamInfo[teamNames[i]].push(teamLogo);
+    })
+    */
   });
 
-  return teamUrl;
+  return teamInfo;
 };
 
 module.exports = getTeamsUrl;

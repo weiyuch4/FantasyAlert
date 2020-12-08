@@ -1,6 +1,5 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { head } = require('./app');
 const getTeamsUrl = require('./teamUrl');
 
 const fetchTeamData = async (teamUrl) => {
@@ -45,6 +44,7 @@ const getAllPlayers = async () => {
         fullRoster[teamsNames[i]].push(player);
       }
     })
+
   }
   
   return fullRoster;

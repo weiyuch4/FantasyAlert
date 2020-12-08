@@ -7,6 +7,7 @@ import {
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
+import TeamScreen from './TeamScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 
@@ -19,6 +20,12 @@ const CustomDrawerContent = (props) => {
 					labelStyle={styles.labelSize}
 					icon={() => <Icon name={'home'} size={30} color={'#F1FAEE'} />}
 					onPress={() => props.navigation.navigate('Home')}
+				/>
+				<DrawerItem
+					label="Players"
+					labelStyle={styles.labelSize}
+					icon={() => <Icon name={'people'} size={30} color={'#F1FAEE'} />}
+					onPress={() => props.navigation.navigate('Players')}
 				/>
 				<DrawerItem
 					label="Settings"
@@ -60,6 +67,7 @@ const App = (props) => {
 				drawerContent={props => <CustomDrawerContent {...props} />}
 			>
 				<Drawer.Screen name="Home" component={HomeScreen} />
+				<Drawer.Screen name="Players" component={TeamScreen} />
 			</Drawer.Navigator>
 		</NavigationContainer>
 	);

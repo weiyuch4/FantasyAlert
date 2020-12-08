@@ -54,13 +54,12 @@ const styles = StyleSheet.create({
     fontSize: 24, 
     fontWeight: 'bold', 
     left: 14,
-    marginVertical: 21
+    marginVertical: 21,
   },
   playerView: {
     width: '100%',
     height: 67,
     backgroundColor: '#1D3557',
-    
   },
   playerIcon: {
     width: 50,
