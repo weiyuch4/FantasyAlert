@@ -1,10 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
 import SearchApp from './SearchBar';
-import getAllPlayerStatus from './Player';
+import getAllPlayerStatus from './PlayerStatus';
+import Context from './Context';
 
 const HomeScreen = ({ navigation }) => {
+
+	const data = useContext(Context);
+	console.log(data);
+
 	const players = getAllPlayerStatus(),
 		playerOn = [],
 		playerOff = [],
@@ -20,43 +25,47 @@ const HomeScreen = ({ navigation }) => {
 	}
 
 	return (
-		<View>
-			<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
-				<StatusBar style="auto" />
-				<SearchApp
-					style={{ backgroundColor: '#457B9D' }}
-					navigation={navigation}
-				/>
-			</View>
-			<View
-				style={{ width: '100%', height: '100%', backgroundColor: '#1D3557' }}
-			>
-				<SectionList
-					sections={[
-						{ title: 'ON', data: playerOn },
-						{ title: 'OFF', data: playerOff },
-					]}
-					renderItem={({ item, index }) => (
-						<View style={styles.playerView}>
-							<Image
-								style={styles.playerIcon}
-								source={require('./logos/nba/lakers.png')}
-							/>
-							<View style={styles.playerText}>
-								<Text style={styles.item}>{item}</Text>
-								<Text style={styles.itemDetail}>
-									{playerStatus[index].quarter} - {playerStatus[index].time}
-								</Text>
-							</View>
-						</View>
-					)}
-					renderSectionHeader={({ section }) => (
-						<Text style={styles.sectionHeader}>{section.title}</Text>
-					)}
-					keyExtractor={(item, index) => index}
-				/>
-			</View>
-		</View>
+		<Context.Consumer>
+			{context => (
+				<View>
+					<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
+						<StatusBar style="auto" />
+						<SearchApp
+							style={{ backgroundColor: '#457B9D' }}
+							navigation={navigation}
+						/>
+					</View>
+					<View
+						style={{ width: '100%', height: '100%', backgroundColor: '#1D3557' }}
+					>
+						<SectionList
+							sections={[
+								{ title: 'ON', data: playerOn },
+								{ title: 'OFF', data: playerOff },
+							]}
+							renderItem={({ item, index }) => (
+								<View style={styles.playerView}>
+									<Image
+										style={styles.playerIcon}
+										source={require('./logos/nba/lakers.png')}
+									/>
+									<View style={styles.playerText}>
+										<Text style={styles.item}>{item}</Text>
+										<Text style={styles.itemDetail}>
+											{playerStatus[index].quarter} - {playerStatus[index].time}
+										</Text>
+									</View>
+								</View>
+							)}
+							renderSectionHeader={({ section }) => (
+								<Text style={styles.sectionHeader}>{section.title}</Text>
+							)}
+							keyExtractor={(item, index) => index}
+						/>
+					</View>
+				</View>
+			)}
+		</Context.Consumer>
 	);
 };
 

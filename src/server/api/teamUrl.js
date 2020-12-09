@@ -49,12 +49,6 @@ const getTeamsUrl = async () => {
         teamInfo[teamNames[i]] = [urlHtml, `./logo/${i}.png`];
       }
     })
-    /*
-    $(this).find('a > img').each(function(index, element) {
-      const teamLogo = $(this).attr('src');
-      teamInfo[teamNames[i]].push(teamLogo);
-    })
-    */
   });
 
   return teamInfo;

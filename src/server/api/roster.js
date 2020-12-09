@@ -21,6 +21,24 @@ const getTeamResults = async (teamUrl) => {
   }
 };
 
+const getPlayers = ($, teamName) => {
+
+  let roster = {};
+  roster[teamName] = [];
+          
+  $('.flex').find('table > tbody > tr > td > div > a > div > figure > div').each(function (index) {
+    const playerHeadshot = $(this).children('img[data-mptype=image]').attr('alt');
+    const playerName = $(this).children('img[data-mptype=image]').attr('title');
+    let player = {};
+    player[playerName] = playerHeadshot;
+    if (playerHeadshot && playerName) {
+      roster[teamName].push(player);
+    }
+  })
+
+  return roster;
+};
+
 const getAllPlayers = async () => {
 
   const data = await getTeamsUrl(),
@@ -29,9 +47,19 @@ const getAllPlayers = async () => {
         
   let fullRoster = {};
 
+  await Promise.all(teamsUrl.map(val => getTeamResults(val[0])))
+    .then(res => Promise.all(res.map(($, index) => getPlayers($, teamsNames[index]))))
+    .then(res => Promise.all(res.map(team => Object.assign(fullRoster, team))))
+
+    //Promise.all(res.map(team => Object.assign(fullRoster, team)))
+    //console.log(res)
+    //console.log(res[0])
+    //console.log(tempRoster);
+
+  /*
   for (let i = 0; i < teamsUrl.length; i++) {
     
-    const $ = await getTeamResults(teamsUrl[i]);
+    const $ = await getTeamResults(teamsUrl[i][0]);
 
     fullRoster[teamsNames[i]] = [];
           
@@ -44,10 +72,11 @@ const getAllPlayers = async () => {
         fullRoster[teamsNames[i]].push(player);
       }
     })
+    
 
   }
-  
-  return fullRoster;
+  */
+ return fullRoster;
 };
 
 module.exports = getAllPlayers;

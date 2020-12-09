@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
+import { Image, SectionList, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchApp from './SearchBar';
 
@@ -28,7 +29,6 @@ const TeamScreen = ({ navigation }) => {
 	}, []);
 
 	const teamNames = Object.keys(teams);
-	const teamInfo = Object.values(teams);
 
 	const teamLogos = {
 		'Boston Celtics': require('./logo/0.png'),
@@ -63,6 +63,10 @@ const TeamScreen = ({ navigation }) => {
 		'San Antonio Spurs': require('./logo/29.png'),
 	};
 
+	const onPressButton = (props) => {
+    navigation.navigate('Roster', {'team': props});
+  };
+
 	return (
 		<View>
 			<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
@@ -85,10 +89,12 @@ const TeamScreen = ({ navigation }) => {
 						{ title: 'Southwest', data: teamNames.slice(25, 30) },
 					]}
 					renderItem={({ item, index }) => (
-						<View style={styles.playerView}>
-							<Image style={styles.playerIcon} source={teamLogos[item]} />
-							<Text style={styles.item}>{item}</Text>
-						</View>
+						<TouchableHighlight onPress={() => {onPressButton(item)}} underlayColor="white">
+							<View style={styles.playerView}>
+								<Image style={styles.playerIcon} source={teamLogos[item]} transition={false}/>
+								<Text style={styles.item}>{item}</Text>
+							</View>
+						</TouchableHighlight>
 					)}
 					renderSectionHeader={({ section }) => (
 						<Text style={styles.sectionHeader}>{section.title}</Text>
