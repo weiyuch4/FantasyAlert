@@ -8,19 +8,18 @@ import Context from './Context';
 const HomeScreen = ({ navigation }) => {
 
 	const data = useContext(Context);
-	console.log(data);
 
-	const players = getAllPlayerStatus(),
-		playerOn = [],
-		playerOff = [],
-		playerStatus = Object.values(players);
+	const players = getAllPlayerStatus(data.followed),
+				playerOn = [],
+				playerOff = [],
+				playerNoGame = [];
 	for (const player in players) {
 		if (players[player].status === 'on') {
 			playerOn.push(player);
-		} else if (players[player].status === 'off') {
+		} else if (players[player].status === 'off' || players[player].status === 'not-started') {
 			playerOff.push(player);
 		} else {
-			console.log('end of game');
+			playerNoGame.push(player);
 		}
 	}
 
@@ -42,17 +41,19 @@ const HomeScreen = ({ navigation }) => {
 							sections={[
 								{ title: 'ON', data: playerOn },
 								{ title: 'OFF', data: playerOff },
+								{ title: 'NO GAMES', data: playerNoGame },
 							]}
 							renderItem={({ item, index }) => (
 								<View style={styles.playerView}>
 									<Image
 										style={styles.playerIcon}
-										source={require('./logos/nba/lakers.png')}
+										source={{uri: players[item].icon}}
+										transition={false}
 									/>
 									<View style={styles.playerText}>
 										<Text style={styles.item}>{item}</Text>
 										<Text style={styles.itemDetail}>
-											{playerStatus[index].quarter} - {playerStatus[index].time}
+											{players[item].quarter}{players[item].time}
 										</Text>
 									</View>
 								</View>

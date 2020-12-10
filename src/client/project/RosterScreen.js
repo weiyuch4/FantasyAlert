@@ -1,7 +1,7 @@
 import { BaseRouter } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState ,useContext } from 'react';
-import { Button, Image, SectionList, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, SectionList, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import SearchApp from './SearchBar';
 import Context from './Context';
 
@@ -21,13 +21,13 @@ const RosterScreen = ({ route, navigation }) => {
 		setRoster(info);
 	}
 	
-	const addPlayer = (player) => {
-		if (data.followed[player]) {
+	const addPlayer = (playerName, playerIcon) => {
+		if (data.followed[playerName]) {
 			const temp = {...data.followed};
-			delete temp[player];
+			delete temp[playerName];
 			data.setFollowed(temp);
 		} else {
-			data.setFollowed({...data.followed, [player]: route.params['team']});
+			data.setFollowed({...data.followed, [playerName]: [route.params['team'], playerIcon]});
 		}
 	}
 
@@ -57,7 +57,13 @@ const RosterScreen = ({ route, navigation }) => {
 									transition={false}
 								/>
 								<View style={styles.playerText}>
-									<Text style={styles.item} onPress={() => addPlayer(Object.keys(item)[0])}>{Object.keys(item)[0]}</Text>
+									<Text style={styles.item}>{Object.keys(item)[0]}</Text>
+									<TouchableHighlight 
+										onPress={() => addPlayer(Object.keys(item)[0], Object.values(item)[0])}
+										style={styles.button}
+									>
+										<Text style={styles.buttonText}>Follow</Text>
+									</TouchableHighlight>
 								</View>
 							</View>
 						)}
@@ -102,14 +108,29 @@ const styles = StyleSheet.create({
 	},
 	item: {
 		color: '#F1FAEE',
-		fontSize: 22,
+		fontSize: 20,
 		fontWeight: 'bold',
+		alignSelf: 'center',
 	},
 	playerText: {
 		display: 'flex',
-		flexDirection: 'column',
-		justifyContent: 'space-around',
+		flexDirection: 'row',
+		flex: 1,
+		justifyContent: 'space-between',
 		textAlign: 'left',
+	},
+	button: {
+		alignItems: 'flex-end',
+		backgroundColor: '#457B9D',
+		alignSelf: 'flex-end',
+		width: 52,
+		borderRadius: 5,
+	},
+	buttonText: {
+		color: 'white',
+		textAlign: 'center',
+		padding: 3,
+		fontWeight: 'bold',
 	},
 });
 

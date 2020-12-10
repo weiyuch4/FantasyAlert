@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { call } from 'react-native-reanimated';
 
-const getAllPlayerStatus = () => {
+const getAllPlayerStatus = (followed) => {
 
   const [allPlayerResponse, setAllPlayerResponse] = useState({});
 
+  /*
   const callAPI = async () => {
     //console.log(process.env.REACT_APP_API_URL);
     await fetch(`http://192.168.1.65:3000/testPlayer`, {
@@ -21,10 +23,30 @@ const getAllPlayerStatus = () => {
         console.log(error);
       });
   };
+  */
+
+  const sendFollowed = () => {
+    fetch('http://192.168.1.65:3000/testPlayer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({'followed': followed}),
+    }).then(res => {
+        if (res.ok) {
+          res.json().then(res => setAllPlayerResponse({...res}))
+        } else {
+          throw new Error('Something went wrong');
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   useEffect(() => {
-    callAPI();
-  }, []);
+    sendFollowed();
+  }, [followed]);
   
   return allPlayerResponse;
 }
