@@ -4,6 +4,7 @@ import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
 import SearchApp from './SearchBar';
 import getAllPlayerStatus from './PlayerStatus';
 import Context from './Context';
+import { RefreshControl } from 'react-native';
 
 const HomeScreen = ({ navigation }) => {
 
@@ -17,11 +18,12 @@ const HomeScreen = ({ navigation }) => {
 
 	const data = useContext(Context);
 
-	const players = getAllPlayerStatus(data.followed),
-				playerOn = [],
-				playerOff = [],
-				playerNoGame = [];
-	for (const player in players) {
+	let players = getAllPlayerStatus(data.followed),
+			playerOn = [],
+			playerOff = [],
+			playerNoGame = [];
+
+	for (let player in players) {
 		if (players[player].status === 'on') {
 			playerOn.push(player);
 		} else if (players[player].status === 'off' || players[player].status === 'not-started') {
@@ -33,7 +35,10 @@ const HomeScreen = ({ navigation }) => {
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
-		wait(2000).then(() => setRefreshing(false));
+		wait(2000).then(() => {
+			setRefreshing(false);
+			data.setUpdate(!data.update);
+		})
 	}, []);
 
 	return (
@@ -75,6 +80,10 @@ const HomeScreen = ({ navigation }) => {
 								<Text style={styles.sectionHeader}>{section.title}</Text>
 							)}
 							keyExtractor={(item, index) => index}
+							refreshControl={
+								<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor='#F1FAEE'/>
+							}
+							extraData={data.update}
 						/>
 					</View>
 				</View>

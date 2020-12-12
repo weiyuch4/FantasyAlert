@@ -22,6 +22,10 @@ const getAllGameId = async () => {
         gameHtml = $(this).find('td[class=live] > a').attr('href');
       }
       
+      if (gameHtml === null || gameHtml === undefined) {
+        gameHtml = $(this).find('a[name="&lpos=nba:schedule:score"]').attr('href');
+      }
+      
       const gameId = gameHtml.split('=')[1];
       games[gameId] = teams;
     })

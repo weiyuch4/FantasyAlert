@@ -86,7 +86,7 @@ const getAllPlayerStatus = async (followedPlayers) => {
 
   const playerNames = Object.keys(followedPlayers),
         playerInfo = Object.values(followedPlayers),
-        playerTeams = playerInfo.map(player => player[0]);
+        playerTeams = playerInfo.map(player => player[0]),
         playerIcons = playerInfo.map(player => player[1]);
 
   do {

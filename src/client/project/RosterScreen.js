@@ -16,7 +16,6 @@ const RosterScreen = ({ route, navigation }) => {
 	const allPlayerData = require('./full-roster.json');
 
 	const [roster, setRoster] = useState([]);
-	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		callRoster();
@@ -34,6 +33,14 @@ const RosterScreen = ({ route, navigation }) => {
 			data.setFollowed(temp);
 		} else {
 			data.setFollowed({...data.followed, [playerName]: [route.params['team'], playerIcon]});
+		}
+	}
+	
+	const updateText = (playerName) => {
+		if (data.followed[playerName]) {
+			return "Unfollow";
+		}	else {
+			return "Follow";
 		}
 	}
 
@@ -68,7 +75,7 @@ const RosterScreen = ({ route, navigation }) => {
 										onPress={() => addPlayer(Object.keys(item)[0], Object.values(item)[0])}
 										style={styles.button}
 									>
-										<Text style={styles.buttonText}>Follow</Text>
+										<Text style={styles.buttonText}>{`${updateText(Object.keys(item)[0])}`}</Text>
 									</TouchableHighlight>
 								</View>
 							</View>
@@ -126,10 +133,9 @@ const styles = StyleSheet.create({
 		textAlign: 'left',
 	},
 	button: {
-		alignItems: 'flex-end',
 		backgroundColor: '#457B9D',
 		alignSelf: 'flex-end',
-		width: 52,
+		width: 68,
 		borderRadius: 5,
 	},
 	buttonText: {
