@@ -68,7 +68,7 @@ const TeamScreen = ({ navigation }) => {
   };
 
 	return (
-		<View>
+		<View style={{flex: 1}}>
 			<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
 				<StatusBar style="auto" />
 				<SearchApp
@@ -77,7 +77,7 @@ const TeamScreen = ({ navigation }) => {
 				/>
 			</View>
 			<View
-				style={{ width: '100%', height: '100%', backgroundColor: '#1D3557' }}
+				style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
 			>
 				<SectionList
 					sections={[

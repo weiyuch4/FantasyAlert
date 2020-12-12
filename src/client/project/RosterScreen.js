@@ -2,8 +2,13 @@ import { BaseRouter } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState ,useContext } from 'react';
 import { Button, Image, SectionList, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+//import ContentLoader from "react-native-easy-content-loader";
 import SearchApp from './SearchBar';
 import Context from './Context';
+import { Icon } from 'react-native-elements';
+import ContentLoader, { Bullets } from 'react-native-easy-content-loader';
+import { SafeAreaView } from 'react-navigation';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const RosterScreen = ({ route, navigation }) => {
 
@@ -11,6 +16,7 @@ const RosterScreen = ({ route, navigation }) => {
 	const allPlayerData = require('./full-roster.json');
 
 	const [roster, setRoster] = useState([]);
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		callRoster();
@@ -34,7 +40,7 @@ const RosterScreen = ({ route, navigation }) => {
 	return (
 		<Context.Consumer>
 			{context => (
-				<View>
+			<View style={{flex: 1}}>
 				<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
 					<StatusBar style="auto" />
 					<SearchApp
@@ -43,7 +49,7 @@ const RosterScreen = ({ route, navigation }) => {
 					/>
 				</View>
 				<View
-					style={{ width: '100%', height: '100%', backgroundColor: '#1D3557' }}
+					style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
 				>
 					<SectionList
 						sections={[

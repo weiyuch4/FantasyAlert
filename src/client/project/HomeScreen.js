@@ -1,11 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
 import SearchApp from './SearchBar';
 import getAllPlayerStatus from './PlayerStatus';
 import Context from './Context';
 
 const HomeScreen = ({ navigation }) => {
+
+	const [refreshing, setRefreshing] = useState(false);
+
+	const wait = (timeout) => {
+		return new Promise(resolve => {
+			setTimeout(resolve, timeout);
+		});
+	}
 
 	const data = useContext(Context);
 
@@ -23,10 +31,15 @@ const HomeScreen = ({ navigation }) => {
 		}
 	}
 
+	const onRefresh = useCallback(() => {
+		setRefreshing(true);
+		wait(2000).then(() => setRefreshing(false));
+	}, []);
+
 	return (
 		<Context.Consumer>
 			{context => (
-				<View>
+				<View style={{flex: 1}}>
 					<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
 						<StatusBar style="auto" />
 						<SearchApp
@@ -35,7 +48,7 @@ const HomeScreen = ({ navigation }) => {
 						/>
 					</View>
 					<View
-						style={{ width: '100%', height: '100%', backgroundColor: '#1D3557' }}
+						style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
 					>
 						<SectionList
 							sections={[

@@ -3,9 +3,7 @@ const getResults = require('./gameScraper');
 const getAllGameId = async () => {
   const $ = await getResults();
 
-  const games = {},
-        leftSubstring = 'Id=',
-        rightSubstring = '\"></a';
+  const games = {};
 
   $('.responsive-table-wrap', '#sched-container').find('table > tbody').filter(function (i) {
    if (i === 0) {
@@ -18,10 +16,13 @@ const getAllGameId = async () => {
         teams.push($(this).attr('title'));
       })
 
-      const gameHtml = $(this).children('td[data-behavior=date_time]').html();
-      const left = gameHtml.indexOf(leftSubstring) + 3,
-            right = gameHtml.indexOf(rightSubstring),
-            gameId = gameHtml.slice(left, right);
+      let gameHtml = $(this).find('td[data-behavior=date_time] > a').attr('href');
+      
+      if (gameHtml === null || gameHtml === undefined) {
+        gameHtml = $(this).find('td[class=live] > a').attr('href');
+      }
+      
+      const gameId = gameHtml.split('=')[1];
       games[gameId] = teams;
     })
    }

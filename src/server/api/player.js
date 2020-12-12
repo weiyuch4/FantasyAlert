@@ -1,5 +1,6 @@
 const getResults = require('./scraper');
 const getAllGameId = require('./game');
+const getStarter = require('./starter');
 
 const getPlayerStatus = async (player) => {
 
@@ -30,6 +31,9 @@ const getPlayerStatus = async (player) => {
 
 
   const $ = await getResults(gameId);
+  //const starters = await getStarter(gameId);
+
+
 
   do {
     $(`#gp-quarter-${num}`).find('div > table > tbody').each(function (index, element) {
@@ -64,7 +68,7 @@ const getPlayerStatus = async (player) => {
 
   if (Object.keys(latest).length === 0) {
     latest['status'] = 'not-started';
-    latest['quarter'] = 'Game Starting Soon';
+    latest['quarter'] = '';
     return latest;
   }
 
