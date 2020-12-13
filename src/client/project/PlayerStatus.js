@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { call } from 'react-native-reanimated';
+//import { API_URL } from 'react-native-dotenv';
 
 const getAllPlayerStatus = (followed) => {
 
   const [allPlayerResponse, setAllPlayerResponse] = useState({});
 
   const sendFollowed = () => {
-    fetch('http://192.168.1.65:3000/testPlayer', {
+    fetch(`http://192.168.1.65:3000/testPlayer`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -13,14 +13,17 @@
     "@react-navigation/drawer": "^5.11.4",
     "@react-navigation/native": "^5.8.10",
     "@react-navigation/stack": "^5.12.7",
+    "babel-plugin-dotenv-import": "^2.1.0",
     "cheerio": "^1.0.0-rc.3",
     "expo": "~39.0.2",
     "expo-status-bar": "~1.0.2",
     "metro": "^0.58.0",
+    "path": "^0.12.7",
     "react": "16.13.1",
     "react-devtools": "^4.10.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-39.0.4.tar.gz",
+    "react-native-dotenv": "^2.4.3",
     "react-native-easy-content-loader": "^0.3.2",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-gesture-handler": "~1.7.0",
@@ -34,7 +37,8 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "metro-react-native-babel-preset": "^0.64.0"
   },
   "private": true
 }

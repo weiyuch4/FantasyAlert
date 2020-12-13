@@ -18,9 +18,8 @@ const fetchData = async (gameId) => {
 const getStarter = async (gameId) => {
   try {
       const data = await fetchData(gameId);
-      const htmlResults = data.content.html;
 
-      const $ = cheerio.load(htmlResults);
+      const $ = cheerio.load(data);
       
       return $;
   } catch (err) {

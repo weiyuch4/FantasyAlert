@@ -11,15 +11,28 @@ const getPlayerStatus = async (player) => {
   const playerName = Object.keys(player)[0],
         playerTeam = Object.values(player)[0];
 
-  const games = await getAllGameId();
+  const allGames = await getAllGameId(),
+        games = allGames[0],
+        gamesEnd = allGames[1];
 
-  const allGameId = Object.keys(games),
-        allTeams = Object.values(games);
+  const onGameId = Object.keys(games),
+        onTeams = Object.values(games);
 
-  for (let i = 0; i < allTeams.length; i++) {
-    if (allTeams[i].includes(playerTeam)) {
-      gameId = allGameId[i];
-      i = allTeams.length;
+  for (let i = 0; i < onTeams.length; i++) {
+    if (onTeams[i].includes(playerTeam)) {
+      gameId = onGameId[i];
+      i = onTeams.length;
+    }
+  }
+
+  const endGameId = Object.keys(gamesEnd),
+        endTeams = Object.values(gamesEnd);
+
+  for (let i = 0; i < endTeams.length; i++) {
+    if (endTeams[i].includes(playerTeam)) {
+      latest['status'] = 'off';
+      latest['quarter'] = 'Game Ended';
+      return latest;
     }
   }
 
@@ -31,9 +44,8 @@ const getPlayerStatus = async (player) => {
 
 
   const $ = await getResults(gameId);
-  //const starters = await getStarter(gameId);
-
-
+  const startersHtml = await getStarter(gameId);
+  const starters = [];
 
   do {
     $(`#gp-quarter-${num}`).find('div > table > tbody').each(function (index, element) {
@@ -65,6 +77,33 @@ const getPlayerStatus = async (player) => {
     });
     num++;
   } while (num < 5);
+
+  /*
+  startersHtml('.mod-data').find('tbody').each(function(index) {
+    console.log(startersHtml(this).find('tr > td > a > span[class=abbr]').text())
+  });
+  */
+
+  startersHtml('.mod-data').each(function(index){
+    startersHtml(this).find('tbody > tr > td > a').each(function(i) {
+      if (i < 5 && startersHtml(this).children('span[class=abbr]').text() !== '') {
+        starters.push(startersHtml(this).children('span[class=abbr]').text());
+      }
+    })
+  });
+  
+  const words = playerName.split(' ');
+  let abbrName = words[0][0] + '.';
+  for (let i = 1; i < words.length; i++) {
+    abbrName = abbrName + ' ' + words[i];
+  }
+
+  if (Object.keys(latest).length === 0 && starters.includes(abbrName)) {
+    latest['status'] = 'on';
+    latest['quarter'] = '1st Quarter - ';
+    latest['time'] = '12:00';
+    return latest;
+  }
 
   if (Object.keys(latest).length === 0) {
     latest['status'] = 'not-started';

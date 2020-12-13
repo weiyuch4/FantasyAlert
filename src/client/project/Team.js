@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+//import { API_URL } from 'react-native-dotenv';
 
 const getTeams = () => {
   const [teams, setTeams] = useState({});

@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { Image, SectionList, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
-
+//import { API_URL } from 'react-native-dotenv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchApp from './SearchBar';
 
