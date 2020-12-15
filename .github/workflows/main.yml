@@ -1,0 +1,16 @@
+name: linting
+
+on: [push]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: src/server/api
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install modules
+        run: npm i
+      - name: Run ESLint
+        run: npm run lint
