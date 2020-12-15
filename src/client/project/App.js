@@ -14,7 +14,7 @@ import { Icon } from 'react-native-elements';
 import Context from './Context';
 import FollowedScreen from './FollowedScreen';
 
-const CustomDrawerContent = (props) => {
+const CustomDrawerContent = props => {
 	return (
 		<SafeAreaProvider>
 			<DrawerContentScrollView {...props}>
@@ -33,7 +33,9 @@ const CustomDrawerContent = (props) => {
 				<DrawerItem
 					label="Followed"
 					labelStyle={styles.labelSize}
-					icon={() => <Icon name={'playlist-add-check'} size={30} color={'#F1FAEE'} />}
+					icon={() => (
+						<Icon name={'playlist-add-check'} size={30} color={'#F1FAEE'} />
+					)}
 					onPress={() => props.navigation.navigate('Followed')}
 				/>
 				<DrawerItem
@@ -45,36 +47,37 @@ const CustomDrawerContent = (props) => {
 			</DrawerContentScrollView>
 		</SafeAreaProvider>
 	);
-}
+};
 
 const Drawer = createDrawerNavigator();
 
-const App = (props) => {
-
+const App = props => {
 	const [followed, setFollowed] = useState({});
 	const [update, setUpdate] = useState(false);
 
 	return (
-		<Context.Provider
-			value = {{followed, setFollowed, update, setUpdate}}
-		>
+		<Context.Provider value={{ followed, setFollowed, update, setUpdate }}>
 			<NavigationContainer>
 				<Drawer.Navigator
 					initialRouteName="Home"
 					drawerStyle={{
-						backgroundColor: '#2B5085',
+						backgroundColor: '#9a8c98',
 					}}
 					drawerContent={props => <CustomDrawerContent {...props} />}
 				>
 					<Drawer.Screen name="Home" component={HomeScreen} />
 					<Drawer.Screen name="Players" component={TeamScreen} />
 					<Drawer.Screen name="Roster" component={RosterScreen} />
-					<Drawer.Screen name="Followed" component={FollowedScreen} />
+					<Drawer.Screen
+						name="Followed"
+						component={FollowedScreen}
+						//options={{ gestrueEnabled: false }}
+					/>
 				</Drawer.Navigator>
 			</NavigationContainer>
 		</Context.Provider>
 	);
-}
+};
 
 const styles = StyleSheet.create({
 	labelSize: {

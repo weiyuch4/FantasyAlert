@@ -1,9 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Image, SectionList, StyleSheet, Text, View, TouchableHighlight } from 'react-native';
+import {
+	Image,
+	SectionList,
+	StyleSheet,
+	Text,
+	View,
+	TouchableHighlight,
+} from 'react-native';
 //import { API_URL } from 'react-native-dotenv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchApp from './SearchBar';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Icon } from 'react-native-elements';
 
 const TeamScreen = ({ navigation }) => {
 	const [teams, setTeams] = useState({});
@@ -63,22 +72,25 @@ const TeamScreen = ({ navigation }) => {
 		'San Antonio Spurs': require('./logo/29.png'),
 	};
 
-	const onPressButton = (props) => {
-    navigation.navigate('Roster', {'team': props});
-  };
+	const onPressButton = props => {
+		navigation.navigate('Roster', { team: props });
+	};
 
 	return (
-		<View style={{flex: 1}}>
-			<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
+		<View style={{ flex: 1 }}>
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					backgroundColor: '#6d6875',
+					flex: 1,
+				}}
+			>
 				<StatusBar style="auto" />
 				<SearchApp
 					style={{ backgroundColor: '#457B9D' }}
 					navigation={navigation}
 				/>
-			</View>
-			<View
-				style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
-			>
 				<SectionList
 					sections={[
 						{ title: 'Atlantic', data: teamNames.slice(0, 5) },
@@ -89,9 +101,18 @@ const TeamScreen = ({ navigation }) => {
 						{ title: 'Southwest', data: teamNames.slice(25, 30) },
 					]}
 					renderItem={({ item, index }) => (
-						<TouchableHighlight onPress={() => {onPressButton(item)}} underlayColor="white">
+						<TouchableHighlight
+							onPress={() => {
+								onPressButton(item);
+							}}
+							underlayColor="white"
+						>
 							<View style={styles.playerView}>
-								<Image style={styles.playerIcon} source={teamLogos[item]} transition={false}/>
+								<Image
+									style={styles.playerIcon}
+									source={teamLogos[item]}
+									transition={false}
+								/>
 								<Text style={styles.item}>{item}</Text>
 							</View>
 						</TouchableHighlight>
@@ -109,16 +130,18 @@ const TeamScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
 	sectionHeader: {
 		color: '#F1FAEE',
-		backgroundColor: '#1D3557',
+		backgroundColor: '#6d6875',
 		fontSize: 24,
 		fontWeight: 'bold',
 		textAlign: 'left',
 		padding: 15,
 	},
 	playerView: {
-		backgroundColor: '#1D3557',
+		backgroundColor: '#f0efeb',
 		flexDirection: 'row',
 		alignItems: 'center',
+		borderBottomColor: '#cdcacc',
+		borderBottomWidth: 1,
 	},
 	playerIcon: {
 		width: 50,
@@ -126,9 +149,12 @@ const styles = StyleSheet.create({
 		margin: 10,
 	},
 	item: {
-		color: '#F1FAEE',
+		color: '#594e36',
 		fontSize: 22,
 		fontWeight: 'bold',
+	},
+	menuIcon: {
+		margin: 15,
 	},
 });
 
