@@ -1,73 +1,80 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext } from 'react';
-import { Image, SectionList, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import {
+	Image,
+	SectionList,
+	StyleSheet,
+	Text,
+	TouchableHighlight,
+	View,
+} from 'react-native';
 import SearchApp from './SearchBar';
 import Context from './Context';
 import getAllPlayerStatus from './PlayerStatus';
 
 const FollowedScreen = ({ route, navigation }) => {
-
 	const data = useContext(Context);
-  
-  const players = getAllPlayerStatus(data.followed);
 
-  const playerNames = Object.keys(players),
-        playerInfo = Object.values(players),
-        playerIcons = playerInfo.map(player => player['icon']);
-	
-	const unfollowPlayer = (playerName) => {
+	const players = getAllPlayerStatus(data.followed);
+
+	const playerNames = Object.keys(players),
+		playerInfo = Object.values(players),
+		playerIcons = playerInfo.map(player => player['icon']);
+
+	const unfollowPlayer = playerName => {
 		if (data.followed[playerName]) {
-			const temp = {...data.followed};
+			const temp = { ...data.followed };
 			delete temp[playerName];
 			data.setFollowed(temp);
 		} else {
 			console.log('Error: unfollowPlayer');
 		}
-	}
+	};
 
 	return (
 		<Context.Consumer>
 			{context => (
-			<View style={{flex: 1}}>
-				<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
-					<StatusBar style="auto" />
-					<SearchApp
-						style={{ backgroundColor: '#457B9D' }}
-						navigation={navigation}
-					/>
+				<View style={{ flex: 1 }}>
+					<View
+						style={{
+							width: '100%',
+							height: '100%',
+							backgroundColor: '#6d6875',
+							flex: 1,
+						}}
+					>
+						<StatusBar style="auto" />
+						<SearchApp
+							style={{ backgroundColor: '#457B9D' }}
+							navigation={navigation}
+						/>
+						<SectionList
+							sections={[{ title: 'Followed Players', data: playerNames }]}
+							renderItem={({ item, index }) => (
+								<View style={styles.playerView}>
+									<Image
+										style={styles.playerIcon}
+										source={{ uri: playerIcons[index] }}
+										transition={false}
+									/>
+									<View style={styles.playerText}>
+										<Text style={styles.item}>{item}</Text>
+										<TouchableHighlight
+											onPress={() => unfollowPlayer(item)}
+											style={styles.button}
+										>
+											<Text style={styles.buttonText}>Unfollow</Text>
+										</TouchableHighlight>
+									</View>
+								</View>
+							)}
+							renderSectionHeader={({ section }) => (
+								<Text style={styles.sectionHeader}>{section.title}</Text>
+							)}
+							keyExtractor={(item, index) => index}
+						/>
+					</View>
 				</View>
-        <View
-          style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
-        >
-          <SectionList
-            sections={[
-              { title: 'Followed Players', data: playerNames },
-            ]}
-            renderItem={({ item, index }) => (
-              <View style={styles.playerView}>
-                <Image
-                  style={styles.playerIcon}
-                  source={{uri: playerIcons[index]}}
-                  transition={false}
-                />
-                <View style={styles.playerText}>
-                  <Text style={styles.item}>{item}</Text>
-                  <TouchableHighlight 
-                    onPress={() => unfollowPlayer(item)}
-                    style={styles.button}
-                  >
-                    <Text style={styles.buttonText}>Unfollow</Text>
-                  </TouchableHighlight>
-                </View>
-              </View>
-            )}
-            renderSectionHeader={({ section }) => (
-              <Text style={styles.sectionHeader}>{section.title}</Text>
-            )}
-            keyExtractor={(item, index) => index}
-          />
-        </View>
-			</View>
 			)}
 		</Context.Consumer>
 	);
@@ -83,7 +90,7 @@ const styles = StyleSheet.create({
 	},
 	sectionHeader: {
 		color: '#F1FAEE',
-		backgroundColor: '#1D3557',
+		backgroundColor: '#6d6875',
 		fontSize: 24,
 		fontWeight: 'bold',
 		textAlign: 'left',
@@ -91,7 +98,7 @@ const styles = StyleSheet.create({
 	},
 	playerView: {
 		flex: 1,
-		backgroundColor: '#1D3557',
+		backgroundColor: '#6d6875',
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
@@ -114,10 +121,12 @@ const styles = StyleSheet.create({
 		textAlign: 'left',
 	},
 	button: {
-		backgroundColor: '#457B9D',
-		alignSelf: 'flex-end',
+		backgroundColor: '#cdcacc',
 		width: 68,
-		borderRadius: 5,
+		borderRadius: 25,
+		margin: 8,
+		paddingVertical: 4,
+		alignSelf: 'flex-end',
 	},
 	buttonText: {
 		color: 'white',
