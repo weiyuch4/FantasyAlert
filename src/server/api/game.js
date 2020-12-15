@@ -11,6 +11,7 @@ const getAllGameId = async () => {
     if (i === 0) {
       $(this).find('tr').each(function(index, element) {
         const teams = [];
+        let status = '';
         $(this).find('td > a > abbr').each(function(index) {
           teams.push($(this).attr('title'));
         })
@@ -26,10 +27,17 @@ const getAllGameId = async () => {
         
         if (gameHtml === null || gameHtml === undefined) {
           gameHtml = $(this).find('a[name="&lpos=nba:schedule:score"]').attr('href');
+          status = 'end';
+        }
+
+        if (status === '') {
+          const gameId = gameHtml.split('=')[1];
+          games[gameId] = teams;
+        } else {
+          const gameId = gameHtml.split('=')[1];
+          gamesEnd[gameId] = teams;
         }
         
-        const gameId = gameHtml.split('=')[1];
-        games[gameId] = teams;
       })
     }
     if (i === 1) {

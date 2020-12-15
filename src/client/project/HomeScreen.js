@@ -45,16 +45,14 @@ const HomeScreen = ({ navigation }) => {
 		<Context.Consumer>
 			{context => (
 				<View style={{flex: 1}}>
-					<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
+					<View
+						style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
+					>
 						<StatusBar style="auto" />
 						<SearchApp
 							style={{ backgroundColor: '#457B9D' }}
 							navigation={navigation}
 						/>
-					</View>
-					<View
-						style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
-					>
 						<SectionList
 							sections={[
 								{ title: 'ON', data: playerOn },
