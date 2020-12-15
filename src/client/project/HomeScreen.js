@@ -1,32 +1,45 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useContext, useState } from 'react';
-import { Image, SectionList, StyleSheet, Text, View } from 'react-native';
+import {
+	Image,
+	SectionList,
+	StyleSheet,
+	Text,
+	View,
+	FlatList,
+} from 'react-native';
 import SearchApp from './SearchBar';
 import getAllPlayerStatus from './PlayerStatus';
 import Context from './Context';
 import { RefreshControl } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
+import { Icon } from 'react-native-elements';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 const HomeScreen = ({ navigation }) => {
-
 	const [refreshing, setRefreshing] = useState(false);
 
-	const wait = (timeout) => {
+	const wait = timeout => {
 		return new Promise(resolve => {
 			setTimeout(resolve, timeout);
 		});
-	}
+	};
 
 	const data = useContext(Context);
 
 	let players = getAllPlayerStatus(data.followed),
-			playerOn = [],
-			playerOff = [],
-			playerNoGame = [];
+		playerOn = [],
+		playerOff = [],
+		playerNoGame = [];
 
 	for (let player in players) {
 		if (players[player].status === 'on') {
 			playerOn.push(player);
-		} else if (players[player].status === 'off' || players[player].status === 'not-started') {
+		} else if (
+			players[player].status === 'off' ||
+			players[player].status === 'not-started'
+		) {
 			playerOff.push(player);
 		} else {
 			playerNoGame.push(player);
@@ -38,53 +51,150 @@ const HomeScreen = ({ navigation }) => {
 		wait(2000).then(() => {
 			setRefreshing(false);
 			data.setUpdate(!data.update);
-		})
+		});
 	}, []);
+
+	const Tab = createMaterialTopTabNavigator();
+
+	const onScreen = () => {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					backgroundColor: '#6d6875',
+					flex: 7,
+				}}
+			>
+				<FlatList
+					data={playerOn}
+					renderItem={({ item }) => (
+						<View style={styles.playerView}>
+							<Image
+								style={styles.playerIcon}
+								source={{ uri: players[item].icon }}
+								transition={false}
+							/>
+							<View style={styles.playerText}>
+								<Text style={styles.item}>{item}</Text>
+								<Text style={styles.itemDetail}>
+									{players[item].quarter}
+									{players[item].time}
+								</Text>
+							</View>
+						</View>
+					)}
+					keyExtractor={(item, index) => index.toString()}
+					refreshControl={
+						<RefreshControl
+							refreshing={refreshing}
+							onRefresh={onRefresh}
+							tintColor="#F1FAEE"
+						/>
+					}
+					extraData={data.update}
+				/>
+			</View>
+		);
+	};
+
+	const offScreen = () => {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					backgroundColor: '#6d6875',
+					flex: 7,
+				}}
+			>
+				<FlatList
+					data={playerOff}
+					renderItem={({ item }) => (
+						<View style={styles.playerView}>
+							<Image
+								style={styles.playerIcon}
+								source={{ uri: players[item].icon }}
+								transition={false}
+							/>
+							<View style={styles.playerText}>
+								<Text style={styles.item}>{item}</Text>
+								<Text style={styles.itemDetail}>
+									{players[item].quarter}
+									{players[item].time}
+								</Text>
+							</View>
+						</View>
+					)}
+					keyExtractor={(item, index) => index.toString()}
+				/>
+			</View>
+		);
+	};
+
+	const noGameScreen = () => {
+		return (
+			<View
+				style={{
+					width: '100%',
+					height: '100%',
+					backgroundColor: '#6d6875',
+					flex: 7,
+				}}
+			>
+				<FlatList
+					data={playerNoGame}
+					renderItem={({ item }) => (
+						<View style={styles.playerView}>
+							<Image
+								style={styles.playerIcon}
+								source={{ uri: players[item].icon }}
+								transition={false}
+							/>
+							<View style={styles.playerText}>
+								<Text style={styles.item}>{item}</Text>
+								<Text style={styles.itemDetail}>
+									{players[item].quarter}
+									{players[item].time}
+								</Text>
+							</View>
+						</View>
+					)}
+					keyExtractor={(item, index) => index.toString()}
+				/>
+			</View>
+		);
+	};
 
 	return (
 		<Context.Consumer>
 			{context => (
-				<View style={{flex: 1}}>
-					<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
+				<View style={{ flex: 1 }}>
+					<View
+						style={{
+							width: '100%',
+							height: '100%',
+							backgroundColor: '#6d6875',
+							flex: 1,
+						}}
+					>
 						<StatusBar style="auto" />
 						<SearchApp
 							style={{ backgroundColor: '#457B9D' }}
 							navigation={navigation}
 						/>
-					</View>
-					<View
-						style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
-					>
-						<SectionList
-							sections={[
-								{ title: 'ON', data: playerOn },
-								{ title: 'OFF', data: playerOff },
-								{ title: 'NO GAMES', data: playerNoGame },
-							]}
-							renderItem={({ item, index }) => (
-								<View style={styles.playerView}>
-									<Image
-										style={styles.playerIcon}
-										source={{uri: players[item].icon}}
-										transition={false}
-									/>
-									<View style={styles.playerText}>
-										<Text style={styles.item}>{item}</Text>
-										<Text style={styles.itemDetail}>
-											{players[item].quarter}{players[item].time}
-										</Text>
-									</View>
-								</View>
-							)}
-							renderSectionHeader={({ section }) => (
-								<Text style={styles.sectionHeader}>{section.title}</Text>
-							)}
-							keyExtractor={(item, index) => index}
-							refreshControl={
-								<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor='#F1FAEE'/>
-							}
-							extraData={data.update}
-						/>
+						<Tab.Navigator
+							tabBarOptions={{
+								style: styles.sectionHeader,
+								labelStyle: styles.tabText,
+								activeTintColor: 'white',
+								indicatorStyle: { backgroundColor: '#f0efeb' },
+							}}
+						>
+							<Tab.Screen name="ON" component={onScreen} />
+							<Tab.Screen name="OFF" component={offScreen} />
+							<Tab.Screen name="NO GAME" component={noGameScreen} />
+						</Tab.Navigator>
 					</View>
 				</View>
 			)}
@@ -102,7 +212,7 @@ const styles = StyleSheet.create({
 	},
 	sectionHeader: {
 		color: '#F1FAEE',
-		backgroundColor: '#1D3557',
+		backgroundColor: '#6d6875',
 		fontSize: 24,
 		fontWeight: 'bold',
 		textAlign: 'left',
@@ -110,7 +220,7 @@ const styles = StyleSheet.create({
 	},
 	playerView: {
 		flex: 1,
-		backgroundColor: '#1D3557',
+		backgroundColor: '#6d6875',
 		flexDirection: 'row',
 		alignItems: 'center',
 	},
@@ -123,6 +233,7 @@ const styles = StyleSheet.create({
 		color: '#F1FAEE',
 		fontSize: 22,
 		fontWeight: 'bold',
+		color: 'white',
 	},
 	playerText: {
 		display: 'flex',
@@ -130,6 +241,77 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-around',
 		textAlign: 'left',
 	},
+	menuIcon: {
+		margin: 15,
+	},
+	rightAction: {
+		justifyContent: 'center',
+		flex: 1,
+		backgroundColor: '#ff4747',
+	},
+	actionText: {
+		color: '#ffffff',
+		fontWeight: '600',
+		padding: 20,
+		alignSelf: 'flex-end',
+	},
+	tabText: {
+		fontSize: 20,
+		fontWeight: 'bold',
+	},
+	tabOject: {
+		backgroundColor: 'white',
+		borderRadius: 25,
+	},
 });
 
 export default HomeScreen;
+
+/*
+<View
+						style={{
+							width: '100%',
+							height: '100%',
+							backgroundColor: '#6d6875',
+							flex: 7,
+						}}
+					>
+						<SectionList
+							sections={[
+								{ title: 'ON', data: playerOn },
+								{ title: 'OFF', data: playerOff },
+								{ title: 'NO GAMES', data: playerNoGame },
+							]}
+							renderItem={({ item, index }) => (
+								<Swipeable renderRightActions={rightActions}>
+									<View style={styles.playerView}>
+										<Image
+											style={styles.playerIcon}
+											source={{ uri: players[item].icon }}
+											transition={false}
+										/>
+										<View style={styles.playerText}>
+											<Text style={styles.item}>{item}</Text>
+											<Text style={styles.itemDetail}>
+												{players[item].quarter}
+												{players[item].time}
+											</Text>
+										</View>
+									</View>
+								</Swipeable>
+							)}
+							renderSectionHeader={({ section }) => (
+								<Text style={styles.sectionHeader}>{section.title}</Text>
+							)}
+							keyExtractor={(item, index) => index}
+							refreshControl={
+								<RefreshControl
+									refreshing={refreshing}
+									onRefresh={onRefresh}
+									tintColor="#F1FAEE"
+								/>
+							}
+							extraData={data.update}
+						/>
+          </View>
+          */

@@ -2,34 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { call } from 'react-native-reanimated';
 //import { API_URL } from 'react-native-dotenv';
 
-const getAllPlayerStatus = (followed) => {
+const getAllPlayerStatus = followed => {
+	const [allPlayerResponse, setAllPlayerResponse] = useState({});
 
-  const [allPlayerResponse, setAllPlayerResponse] = useState({});
+	const sendFollowed = () => {
+		fetch(`http://192.168.1.65:3000/testPlayer`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ followed: followed }),
+		})
+			.then(res => {
+				if (res.ok) {
+					res.json().then(res => setAllPlayerResponse({ ...res }));
+				} else {
+					throw new Error('Something went wrong');
+				}
+			})
+			.catch(error => {
+				console.log(error);
+			});
+	};
 
-  const sendFollowed = () => {
-    fetch(`http://192.168.1.65:3000/testPlayer`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({'followed': followed}),
-    }).then(res => {
-        if (res.ok) {
-          res.json().then(res => setAllPlayerResponse({...res}))
-        } else {
-          throw new Error('Something went wrong');
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+	useEffect(() => {
+		sendFollowed();
+	}, [followed]);
 
-  useEffect(() => {
-    sendFollowed();
-  }, [followed]);
-  
-  return allPlayerResponse;
-}
+	return allPlayerResponse;
+};
 
 export default getAllPlayerStatus;

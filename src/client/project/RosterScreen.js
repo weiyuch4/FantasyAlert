@@ -1,17 +1,24 @@
 import { BaseRouter } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState ,useContext } from 'react';
-import { Button, Image, SectionList, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import {
+	Button,
+	Image,
+	SectionList,
+	StyleSheet,
+	Text,
+	TouchableHighlight,
+	View,
+} from 'react-native';
 //import ContentLoader from "react-native-easy-content-loader";
 import SearchApp from './SearchBar';
 import Context from './Context';
 import { Icon } from 'react-native-elements';
 import ContentLoader, { Bullets } from 'react-native-easy-content-loader';
 import { SafeAreaView } from 'react-navigation';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, Swipeable } from 'react-native-gesture-handler';
 
 const RosterScreen = ({ route, navigation }) => {
-
 	const data = useContext(Context);
 	const allPlayerData = require('./full-roster.json');
 
@@ -24,69 +31,77 @@ const RosterScreen = ({ route, navigation }) => {
 	const callRoster = () => {
 		const info = allPlayerData[route.params['team']];
 		setRoster(info);
-	}
-	
+	};
+
 	const addPlayer = (playerName, playerIcon) => {
 		if (data.followed[playerName]) {
-			const temp = {...data.followed};
+			const temp = { ...data.followed };
 			delete temp[playerName];
 			data.setFollowed(temp);
 		} else {
-			data.setFollowed({...data.followed, [playerName]: [route.params['team'], playerIcon]});
+			data.setFollowed({
+				...data.followed,
+				[playerName]: [route.params['team'], playerIcon],
+			});
 		}
-	}
-	
-	const updateText = (playerName) => {
+	};
+
+	const updateText = playerName => {
 		if (data.followed[playerName]) {
-			return "Unfollow";
-		}	else {
-			return "Follow";
+			return 'Unfollow';
+		} else {
+			return 'Follow';
 		}
-	}
+	};
 
 	return (
 		<Context.Consumer>
 			{context => (
-			<View style={{flex: 1}}>
-				<View style={{ width: '100%', height: 105, backgroundColor: '#1D3557' }}>
-					<StatusBar style="auto" />
-					<SearchApp
-						style={{ backgroundColor: '#457B9D' }}
-						navigation={navigation}
-					/>
-				</View>
-				<View
-					style={{ width: '100%', height: '100%', backgroundColor: '#1D3557', flex: 1}}
-				>
-					<SectionList
-						sections={[
-							{ title: 'Players', data: roster },
-						]}
-						renderItem={({ item, index }) => (
-							<View style={styles.playerView}>
-								<Image
-									style={styles.playerIcon}
-									source={{uri: Object.values(item)[0]}}
-									transition={false}
-								/>
-								<View style={styles.playerText}>
-									<Text style={styles.item}>{Object.keys(item)[0]}</Text>
-									<TouchableHighlight 
-										onPress={() => addPlayer(Object.keys(item)[0], Object.values(item)[0])}
-										style={styles.button}
-									>
-										<Text style={styles.buttonText}>{`${updateText(Object.keys(item)[0])}`}</Text>
-									</TouchableHighlight>
+				<View style={{ flex: 1 }}>
+					<View
+						style={{
+							width: '100%',
+							height: '100%',
+							backgroundColor: '#6d6875',
+							flex: 1,
+						}}
+					>
+						<StatusBar style="auto" />
+						<SearchApp
+							style={{ backgroundColor: '#457B9D' }}
+							navigation={navigation}
+						/>
+						<SectionList
+							sections={[{ title: 'Players', data: roster }]}
+							renderItem={({ item, index }) => (
+								<View style={styles.playerView}>
+									<Image
+										style={styles.playerIcon}
+										source={{ uri: Object.values(item)[0] }}
+										transition={false}
+									/>
+									<View style={styles.playerText}>
+										<Text style={styles.item}>{Object.keys(item)[0]}</Text>
+										<TouchableHighlight
+											onPress={() =>
+												addPlayer(Object.keys(item)[0], Object.values(item)[0])
+											}
+											style={styles.button}
+										>
+											<Text style={styles.buttonText}>{`${updateText(
+												Object.keys(item)[0]
+											)}`}</Text>
+										</TouchableHighlight>
+									</View>
 								</View>
-							</View>
-						)}
-						renderSectionHeader={({ section }) => (
-							<Text style={styles.sectionHeader}>{section.title}</Text>
-						)}
-						keyExtractor={(item, index) => index}
-					/>
+							)}
+							renderSectionHeader={({ section }) => (
+								<Text style={styles.sectionHeader}>{section.title}</Text>
+							)}
+							keyExtractor={(item, index) => index}
+						/>
+					</View>
 				</View>
-			</View>
 			)}
 		</Context.Consumer>
 	);
@@ -102,17 +117,18 @@ const styles = StyleSheet.create({
 	},
 	sectionHeader: {
 		color: '#F1FAEE',
-		backgroundColor: '#1D3557',
+		backgroundColor: '#6d6875',
 		fontSize: 24,
 		fontWeight: 'bold',
 		textAlign: 'left',
 		padding: 15,
 	},
 	playerView: {
-		flex: 1,
-		backgroundColor: '#1D3557',
+		backgroundColor: '#f0efeb',
 		flexDirection: 'row',
 		alignItems: 'center',
+		borderBottomColor: '#cdcacc',
+		borderBottomWidth: 1,
 	},
 	playerIcon: {
 		width: 50,
@@ -120,29 +136,34 @@ const styles = StyleSheet.create({
 		margin: 10,
 	},
 	item: {
-		color: '#F1FAEE',
 		fontSize: 20,
 		fontWeight: 'bold',
+		color: '#594e36',
 		alignSelf: 'center',
 	},
 	playerText: {
 		display: 'flex',
 		flexDirection: 'row',
 		flex: 1,
+		color: '#222725',
 		justifyContent: 'space-between',
-		textAlign: 'left',
 	},
 	button: {
-		backgroundColor: '#457B9D',
-		alignSelf: 'flex-end',
+		backgroundColor: '#cdcacc',
 		width: 68,
-		borderRadius: 5,
+		borderRadius: 25,
+		margin: 8,
+		paddingVertical: 4,
+		alignSelf: 'flex-end',
 	},
 	buttonText: {
 		color: 'white',
 		textAlign: 'center',
 		padding: 3,
 		fontWeight: 'bold',
+	},
+	menuIcon: {
+		margin: 15,
 	},
 });
 
