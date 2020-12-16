@@ -13,6 +13,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Icon } from 'react-native-elements';
 import Context from './Context';
 import FollowedScreen from './FollowedScreen';
+import SettingsScreen from './SettingsScreen';
 
 const CustomDrawerContent = props => {
 	return (
@@ -42,7 +43,7 @@ const CustomDrawerContent = props => {
 					label="Settings"
 					labelStyle={styles.labelSize}
 					icon={() => <Icon name={'settings'} size={30} color={'#F1FAEE'} />}
-					onPress={() => {}}
+					onPress={() => props.navigation.navigate('Settings')}
 				/>
 			</DrawerContentScrollView>
 		</SafeAreaProvider>
@@ -73,6 +74,7 @@ const App = props => {
 						component={FollowedScreen}
 						//options={{ gestrueEnabled: false }}
 					/>
+					<Drawer.Screen name="Settings" component={SettingsScreen} />
 				</Drawer.Navigator>
 			</NavigationContainer>
 		</Context.Provider>

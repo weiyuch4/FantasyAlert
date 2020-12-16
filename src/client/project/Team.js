@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-//import { API_URL } from 'react-native-dotenv';
+import { API_URL } from 'react-native-dotenv';
 
 const getTeams = () => {
 	const [teams, setTeams] = useState({});
 
 	const callAPI = async () => {
-		await fetch(`http://192.168.1.65:3000/testTeamUrl`, {
+		await fetch(`${API_URL}/testTeamUrl`, {
 			method: 'GET',
 		})
 			.then(res => {

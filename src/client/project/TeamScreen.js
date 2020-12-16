@@ -8,7 +8,7 @@ import {
 	View,
 	TouchableHighlight,
 } from 'react-native';
-//import { API_URL } from 'react-native-dotenv';
+import { API_URL } from 'react-native-dotenv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchApp from './SearchBar';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -18,7 +18,7 @@ const TeamScreen = ({ navigation }) => {
 	const [teams, setTeams] = useState({});
 
 	const callAPI = () => {
-		fetch(`http://192.168.1.65:3000/testTeamUrl`, {
+		fetch(`${API_URL}/testTeamUrl`, {
 			method: 'GET',
 		})
 			.then(res => {
@@ -72,7 +72,7 @@ const TeamScreen = ({ navigation }) => {
 		'San Antonio Spurs': require('./logo/29.png'),
 	};
 
-	const onPressButton = props => {
+	const onPressButton = (props) => {
 		navigation.navigate('Roster', { team: props });
 	};
 
