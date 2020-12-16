@@ -14,6 +14,7 @@ import { Icon } from 'react-native-elements';
 import Context from './Context';
 import FollowedScreen from './FollowedScreen';
 import SettingsScreen from './SettingsScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CustomDrawerContent = props => {
 	return (
@@ -39,25 +40,52 @@ const CustomDrawerContent = props => {
 					)}
 					onPress={() => props.navigation.navigate('Followed')}
 				/>
-				<DrawerItem
-					label="Settings"
-					labelStyle={styles.labelSize}
-					icon={() => <Icon name={'settings'} size={30} color={'#F1FAEE'} />}
-					onPress={() => props.navigation.navigate('Settings')}
-				/>
+				
 			</DrawerContentScrollView>
+			<View>
+					<DrawerItem
+						label="Settings"
+						labelStyle={styles.labelSize}
+						icon={() => <Icon name={'settings'} size={30} color={'#F1FAEE'} />}
+						onPress={() => props.navigation.navigate('Settings')}
+						style={
+							{
+								paddingBottom: '5%', 
+								borderTopColor: '#cdcacc',
+								borderTopWidth: 1,
+							}
+						}
+					/>
+				</View>
 		</SafeAreaProvider>
 	);
 };
 
 const Drawer = createDrawerNavigator();
 
-const App = props => {
+const App = (props) => {
 	const [followed, setFollowed] = useState({});
 	const [update, setUpdate] = useState(false);
+	const [isLoaded, setIsLoaded] = useState(false);
+	
+	const loadData = async () => {
+		try {
+			const jsonValue = await AsyncStorage.getItem('@followed');
+			if (jsonValue !== null) {
+				setFollowed(JSON.parse(jsonValue));
+			}
+		} catch (err) {
+			alert(err);
+		}
+	};
+	
+	useEffect(() => {
+		loadData();
+		setIsLoaded(true);
+	}, []);
 
 	return (
-		<Context.Provider value={{ followed, setFollowed, update, setUpdate }}>
+		<Context.Provider value={{ followed, setFollowed, update, setUpdate, isLoaded, setIsLoaded }}>
 			<NavigationContainer>
 				<Drawer.Navigator
 					initialRouteName="Home"
@@ -65,6 +93,7 @@ const App = props => {
 						backgroundColor: '#9a8c98',
 					}}
 					drawerContent={props => <CustomDrawerContent {...props} />}
+					edgeWidth={0}
 				>
 					<Drawer.Screen name="Home" component={HomeScreen} />
 					<Drawer.Screen name="Players" component={TeamScreen} />

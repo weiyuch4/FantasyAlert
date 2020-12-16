@@ -14,6 +14,7 @@ import { SearchBar, Icon } from 'react-native-elements';
 import Animated, { Easing } from 'react-native-reanimated';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Context from './Context';
 
 const SearchApp = props => {
@@ -39,6 +40,10 @@ const SearchApp = props => {
 		setFilteredData(allPlayerData);
 		setMasterData(allPlayerData);
 	}, []);
+
+	useEffect(() => {
+		storeData(data.followed);
+	}, [data.followed]);
 
 	const onFocus = () => {
 		setIsFocused(true);
@@ -134,7 +139,7 @@ const SearchApp = props => {
 		}
 	};
 
-	const updateText = playerName => {
+	const updateText = (playerName) => {
 		if (data.followed[playerName]) {
 			return 'Unfollow';
 		} else {
@@ -170,6 +175,17 @@ const SearchApp = props => {
 				</View>
 			</View>
 		);
+	};
+
+	const storeData = async (value) => {
+		if (data.isLoaded === true) {
+			try {
+				const jsonValue = JSON.stringify(value);
+				await AsyncStorage.setItem('@followed', jsonValue);
+			} catch (err) {
+				alert(err);
+			}
+		}
 	};
 
 	return (
@@ -379,7 +395,9 @@ const styles = StyleSheet.create({
 		borderRadius: 25,
 		margin: 8,
 		paddingVertical: 4,
-		alignSelf: 'flex-end',
+		alignSelf: 'center',
+		position: 'absolute',
+		right: 0,
 	},
 	buttonText: {
 		color: 'white',

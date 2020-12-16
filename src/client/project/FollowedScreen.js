@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
 	Image,
 	SectionList,
@@ -8,6 +8,7 @@ import {
 	TouchableHighlight,
 	View,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchApp from './SearchBar';
 import Context from './Context';
 import getAllPlayerStatus from './PlayerStatus';
@@ -30,6 +31,21 @@ const FollowedScreen = ({ route, navigation }) => {
 			console.log('Error: unfollowPlayer');
 		}
 	};
+
+	const storeData = async (value) => {
+		if (data.isLoaded === true) {
+			try {
+				const jsonValue = JSON.stringify(value);
+				await AsyncStorage.setItem('@followed', jsonValue);
+			} catch (err) {
+				alert(err);
+			}
+		}
+	};
+
+	useEffect(() => {
+		storeData(data.followed);
+	}, [data.followed]);
 
 	return (
 		<Context.Consumer>
@@ -126,7 +142,9 @@ const styles = StyleSheet.create({
 		borderRadius: 25,
 		margin: 8,
 		paddingVertical: 4,
-		alignSelf: 'flex-end',
+		alignSelf: 'center',
+		position: 'absolute',
+		right: 0,
 	},
 	buttonText: {
 		color: 'white',

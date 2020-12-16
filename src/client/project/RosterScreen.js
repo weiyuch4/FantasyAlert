@@ -17,6 +17,7 @@ import { Icon } from 'react-native-elements';
 import ContentLoader, { Bullets } from 'react-native-easy-content-loader';
 import { SafeAreaView } from 'react-navigation';
 import { ScrollView, Swipeable } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RosterScreen = ({ route, navigation }) => {
 	const data = useContext(Context);
@@ -27,6 +28,10 @@ const RosterScreen = ({ route, navigation }) => {
 	useEffect(() => {
 		callRoster();
 	}, [route.params['team']]);
+
+	useEffect(() => {
+		storeData(data.followed);
+	}, [data.followed]);
 
 	const callRoster = () => {
 		const info = allPlayerData[route.params['team']];
@@ -43,6 +48,17 @@ const RosterScreen = ({ route, navigation }) => {
 				...data.followed,
 				[playerName]: [route.params['team'], playerIcon],
 			});
+		}
+	};
+
+	const storeData = async (value) => {
+		if (data.isLoaded === true) {
+			try {
+				const jsonValue = JSON.stringify(value);
+				await AsyncStorage.setItem('@followed', jsonValue);
+			} catch (err) {
+				alert(err);
+			}
 		}
 	};
 
@@ -154,7 +170,9 @@ const styles = StyleSheet.create({
 		borderRadius: 25,
 		margin: 8,
 		paddingVertical: 4,
-		alignSelf: 'flex-end',
+		alignSelf: 'center',
+		position: 'absolute',
+		right: 0,
 	},
 	buttonText: {
 		color: 'white',
