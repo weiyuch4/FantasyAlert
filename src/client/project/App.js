@@ -19,7 +19,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const CustomDrawerContent = props => {
 	return (
 		<SafeAreaProvider>
-			<DrawerContentScrollView {...props}>
+			<View>
+				<DrawerItem
+					label="FantasyAlert"
+					labelStyle={styles.labelSize}
+					style={
+						{
+							paddingTop: '15%', 
+							borderBottomColor: '#cdcacc',
+							borderBottomWidth: 1,
+						}
+					}
+				/>
+			</View>
+			<DrawerContentScrollView {...props} style={{top: '-5%'}} scrollEnabled={false}>
 				<DrawerItem
 					label="Home"
 					labelStyle={styles.labelSize}
@@ -43,20 +56,20 @@ const CustomDrawerContent = props => {
 				
 			</DrawerContentScrollView>
 			<View>
-					<DrawerItem
-						label="Settings"
-						labelStyle={styles.labelSize}
-						icon={() => <Icon name={'settings'} size={30} color={'#F1FAEE'} />}
-						onPress={() => props.navigation.navigate('Settings')}
-						style={
-							{
-								paddingBottom: '5%', 
-								borderTopColor: '#cdcacc',
-								borderTopWidth: 1,
-							}
+				<DrawerItem
+					label="Settings"
+					labelStyle={styles.labelSize}
+					icon={() => <Icon name={'settings'} size={30} color={'#F1FAEE'} />}
+					onPress={() => props.navigation.navigate('Settings')}
+					style={
+						{
+							paddingBottom: '5%', 
+							borderTopColor: '#cdcacc',
+							borderTopWidth: 1,
 						}
-					/>
-				</View>
+					}
+				/>
+			</View>
 		</SafeAreaProvider>
 	);
 };

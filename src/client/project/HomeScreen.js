@@ -16,6 +16,9 @@ import { Swipeable } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import GreekFreak from './illustrations/GreekFreak';
+import RefreshingBeverage from './illustrations/RefreshingBeverage';
+import GameDay from './illustrations/GameDay';
 
 const HomeScreen = ({ navigation }) => {
 	const [refreshing, setRefreshing] = useState(false);
@@ -66,34 +69,45 @@ const HomeScreen = ({ navigation }) => {
 					flex: 7,
 				}}
 			>
-				<FlatList
-					data={playerOn}
-					renderItem={({ item }) => (
-						<View style={styles.playerView}>
-							<Image
-								style={styles.playerIcon}
-								source={{ uri: players[item].icon }}
-								transition={false}
-							/>
-							<View style={styles.playerText}>
-								<Text style={styles.item}>{item}</Text>
-								<Text style={styles.itemDetail}>
-									{players[item].quarter}
-									{players[item].time}
-								</Text>
-							</View>
+				{playerOn.length === 0 ? (
+					<View style={styles.imagePlaceholderContainer}>
+						<View style={{marginTop: "-25%"}}>
+							<GreekFreak />
+							<Text style={styles.imagePlaceholderText}>
+								None of the players you follow are on the court
+							</Text>
 						</View>
-					)}
-					keyExtractor={(item, index) => index.toString()}
-					refreshControl={
-						<RefreshControl
-							refreshing={refreshing}
-							onRefresh={onRefresh}
-							tintColor="#F1FAEE"
-						/>
-					}
-					extraData={data.update}
-				/>
+					</View>
+				) : (
+					<FlatList
+						data={playerOn}
+						renderItem={({ item }) => (
+							<View style={styles.playerView}>
+								<Image
+									style={styles.playerIcon}
+									source={{ uri: players[item].icon }}
+									transition={false}
+								/>
+								<View style={styles.playerText}>
+									<Text style={styles.item}>{item}</Text>
+									<Text style={styles.itemDetail}>
+										{players[item].quarter}
+										{players[item].time}
+									</Text>
+								</View>
+							</View>
+						)}
+						keyExtractor={(item, index) => index.toString()}
+						refreshControl={
+							<RefreshControl
+								refreshing={refreshing}
+								onRefresh={onRefresh}
+								tintColor="#F1FAEE"
+							/>
+						}
+						extraData={data.update}
+					/>
+				)}
 			</View>
 		);
 	};
@@ -108,26 +122,37 @@ const HomeScreen = ({ navigation }) => {
 					flex: 7,
 				}}
 			>
-				<FlatList
-					data={playerOff}
-					renderItem={({ item }) => (
-						<View style={styles.playerView}>
-							<Image
-								style={styles.playerIcon}
-								source={{ uri: players[item].icon }}
-								transition={false}
-							/>
-							<View style={styles.playerText}>
-								<Text style={styles.item}>{item}</Text>
-								<Text style={styles.itemDetail}>
-									{players[item].quarter}
-									{players[item].time}
-								</Text>
-							</View>
+				{playerOff.length === 0 ? (
+					<View style={styles.imagePlaceholderContainer}>
+						<View style={{marginTop: "-25%"}}>
+							<RefreshingBeverage />
+							<Text style={styles.imagePlaceholderText}>
+								None of the players you follow are off the court
+							</Text>
 						</View>
-					)}
-					keyExtractor={(item, index) => index.toString()}
-				/>
+					</View>
+				) : (
+					<FlatList
+						data={playerOff}
+						renderItem={({ item }) => (
+							<View style={styles.playerView}>
+								<Image
+									style={styles.playerIcon}
+									source={{ uri: players[item].icon }}
+									transition={false}
+								/>
+								<View style={styles.playerText}>
+									<Text style={styles.item}>{item}</Text>
+									<Text style={styles.itemDetail}>
+										{players[item].quarter}
+										{players[item].time}
+									</Text>
+								</View>
+							</View>
+						)}
+						keyExtractor={(item, index) => index.toString()}
+					/>
+				)}
 			</View>
 		);
 	};
@@ -142,26 +167,37 @@ const HomeScreen = ({ navigation }) => {
 					flex: 7,
 				}}
 			>
-				<FlatList
-					data={playerNoGame}
-					renderItem={({ item }) => (
-						<View style={styles.playerView}>
-							<Image
-								style={styles.playerIcon}
-								source={{ uri: players[item].icon }}
-								transition={false}
-							/>
-							<View style={styles.playerText}>
-								<Text style={styles.item}>{item}</Text>
-								<Text style={styles.itemDetail}>
-									{players[item].quarter}
-									{players[item].time}
-								</Text>
-							</View>
+				{playerNoGame.length === 0 ? (
+					<View style={styles.imagePlaceholderContainer}>
+						<View style={{marginTop: "-25%"}}>
+							<GameDay />
+							<Text style={styles.imagePlaceholderText}>
+								Every player you follow have a game today
+							</Text>
 						</View>
-					)}
-					keyExtractor={(item, index) => index.toString()}
-				/>
+					</View>
+				) : (
+					<FlatList
+						data={playerNoGame}
+						renderItem={({ item }) => (
+							<View style={styles.playerView}>
+								<Image
+									style={styles.playerIcon}
+									source={{ uri: players[item].icon }}
+									transition={false}
+								/>
+								<View style={styles.playerText}>
+									<Text style={styles.item}>{item}</Text>
+									<Text style={styles.itemDetail}>
+										{players[item].quarter}
+										{players[item].time}
+									</Text>
+								</View>
+							</View>
+						)}
+						keyExtractor={(item, index) => index.toString()}
+					/>
+				)}
 			</View>
 		);
 	};
@@ -262,6 +298,17 @@ const styles = StyleSheet.create({
 	tabOject: {
 		backgroundColor: 'white',
 		borderRadius: 25,
+	},
+	imagePlaceholderContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		top: -1,
+	},
+	imagePlaceholderText: {
+		textAlign: 'center',
+		color: '#F1FAEE',
+		top: '10%'
 	},
 });
 

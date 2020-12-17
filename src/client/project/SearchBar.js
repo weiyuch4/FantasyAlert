@@ -15,6 +15,7 @@ import Animated, { Easing } from 'react-native-reanimated';
 import { FlatList, TextInput } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-navigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TheSearch from './illustrations/TheSearch';
 import Context from './Context';
 
 const SearchApp = props => {
@@ -252,9 +253,12 @@ const SearchApp = props => {
 						<View style={styles.separator} />
 						{search === '' ? (
 							<View style={styles.imagePlaceholderContainer}>
-								<Text style={styles.imagePlaceholderText}>
-									Enter a few words to search
-								</Text>
+								<View style={{marginTop: "25%"}}>
+									<TheSearch />
+									<Text style={styles.imagePlaceholderText}>
+										Enter a few words to search
+									</Text>
+								</View>
 							</View>
 						) : (
 							<FlatList
@@ -351,8 +355,8 @@ const styles = StyleSheet.create({
 	},
 	imagePlaceholderText: {
 		textAlign: 'center',
-		color: 'gray',
-		marginTop: 5,
+		color: '#F1FAEE',
+		top: '10%'
 	},
 	searchItem: {
 		flexDirection: 'row',

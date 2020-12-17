@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchApp from './SearchBar';
 import Context from './Context';
 import getAllPlayerStatus from './PlayerStatus';
+import Void from './illustrations/Void';
 
 const FollowedScreen = ({ route, navigation }) => {
 	const data = useContext(Context);
@@ -19,8 +20,8 @@ const FollowedScreen = ({ route, navigation }) => {
 	const players = getAllPlayerStatus(data.followed);
 
 	const playerNames = Object.keys(players),
-		playerInfo = Object.values(players),
-		playerIcons = playerInfo.map(player => player['icon']);
+				playerInfo = Object.values(players),
+				playerIcons = playerInfo.map(player => player['icon']);
 
 	const unfollowPlayer = playerName => {
 		if (data.followed[playerName]) {
@@ -64,6 +65,19 @@ const FollowedScreen = ({ route, navigation }) => {
 							style={{ backgroundColor: '#457B9D' }}
 							navigation={navigation}
 						/>
+						{playerNames.length === 0 ? (
+							<View style={styles.imagePlaceholderContainer}>
+								<Text style={styles.noDataSectionHeader}>
+										Followed Players
+								</Text>
+								<View style={{marginTop: "-25%"}}>
+									<Void />
+									<Text style={styles.imagePlaceholderText}>
+										You are not following anyone
+									</Text>
+								</View>
+							</View>
+						) : (
 						<SectionList
 							sections={[{ title: 'Followed Players', data: playerNames }]}
 							renderItem={({ item, index }) => (
@@ -89,6 +103,7 @@ const FollowedScreen = ({ route, navigation }) => {
 							)}
 							keyExtractor={(item, index) => index}
 						/>
+						)}
 					</View>
 				</View>
 			)}
@@ -104,13 +119,22 @@ const styles = StyleSheet.create({
 		// left: 81,
 		//paddingTop: 10,
 	},
+	noDataSectionHeader: {
+		color: '#F1FAEE',
+		backgroundColor: '#6d6875',
+		fontSize: 24,
+		fontWeight: 'bold',
+		textAlign: 'left',
+		paddingLeft: 15,
+		bottom: '25%',
+	},
 	sectionHeader: {
 		color: '#F1FAEE',
 		backgroundColor: '#6d6875',
 		fontSize: 24,
 		fontWeight: 'bold',
 		textAlign: 'left',
-		padding: 15,
+		paddingLeft: 15,
 	},
 	playerView: {
 		flex: 1,
@@ -151,6 +175,17 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		padding: 3,
 		fontWeight: 'bold',
+	},
+	imagePlaceholderContainer: {
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		top: -1,
+	},
+	imagePlaceholderText: {
+		textAlign: 'center',
+		color: '#F1FAEE',
+		top: '10%'
 	},
 });
 
