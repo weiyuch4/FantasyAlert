@@ -1,13 +1,13 @@
 import { API_URL } from 'react-native-dotenv';
 
-const getTeams = async (setTeams) => {
+const getFullRoster = async (setFullRoster) => {
 
-  await fetch(`${API_URL}/testTeamUrl`, {
+  await fetch(`${API_URL}/testRoster`, {
     method: 'GET',
   })
     .then(res => {
       if (res.ok) {
-        res.json().then(res => setTeams({ ...res }));
+        res.json().then(res => setFullRoster({ ...res }));
       } else {
         throw new Error('Something went wrong');
       }
@@ -18,4 +18,4 @@ const getTeams = async (setTeams) => {
 
 };
 
-export default getTeams;
+export default getFullRoster;

@@ -1,29 +1,42 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useContext, useEffect } from 'react';
 import {
-	Image,
 	SectionList,
 	StyleSheet,
 	Text,
 	TouchableHighlight,
-	View,
+  View,
+  Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchApp from './SearchBar';
 import Context from './Context';
-import getAllPlayerStatus from './PlayerStatus';
 import Void from './illustrations/Void';
+import { Image } from 'react-native-expo-image-cache';
+import CachedImage from 'react-native-expo-cached-image';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Icon } from 'react-native-elements';
+import { RectButton } from 'react-native-gesture-handler';
+import ServerDown from './illustrations/ServerDown';
 
 const FollowedScreen = ({ route, navigation }) => {
 	const data = useContext(Context);
 
-	const players = getAllPlayerStatus(data.followed);
+	const players = data.followedStatus;
 
 	const playerNames = Object.keys(players),
 				playerInfo = Object.values(players),
-				playerIcons = playerInfo.map(player => player['icon']);
+        playerIcons = playerInfo.map(player => player['icon']);
 
-	const unfollowPlayer = playerName => {
+  const preview = {uri: 'https://www.pinclipart.com/picdir/middle/148-1486972_mystery-man-avatar-circle-clipart.png'};
+        
+  let handleErr = false;
+
+  if (players.handle) {
+    handleErr = true;
+  }
+
+	const unfollowPlayer = (playerName) => {
 		if (data.followed[playerName]) {
 			const temp = { ...data.followed };
 			delete temp[playerName];
@@ -42,7 +55,32 @@ const FollowedScreen = ({ route, navigation }) => {
 				alert(err);
 			}
 		}
-	};
+  };
+  
+  const renderRightAction = (icon, color, backgroundColor, x, progress) => {
+    const trans = progress.interpolate({
+      inputRange: [0, 1],
+      outputRange: [x, 0]
+    })
+
+    return (
+      <Animated.View style={{flex: 1, transform: [{translateX: trans}]}}>
+        <RectButton style = {[styles.rightAction, {backgroundColor: backgroundColor}]}>
+          <Icon name={icon} size={30} color={color} />
+        </RectButton>
+      </Animated.View>
+    )
+  }
+
+  const renderRightActions = (progress) => (
+    <View style={{width: 64, flexDirection: 'row'}}>
+      {renderRightAction('notifications', '#F1FAEE', '#9a8c98', 128, progress)}
+    </View>
+  )
+
+  const updateRef = (ref) => {
+    const swipeableRow = ref;
+  }
 
 	useEffect(() => {
 		storeData(data.followed);
@@ -65,45 +103,65 @@ const FollowedScreen = ({ route, navigation }) => {
 							style={{ backgroundColor: '#457B9D' }}
 							navigation={navigation}
 						/>
-						{playerNames.length === 0 ? (
-							<View style={styles.imagePlaceholderContainer}>
-								<Text style={styles.noDataSectionHeader}>
-										Followed Players
-								</Text>
-								<View style={{marginTop: "-25%"}}>
-									<Void />
-									<Text style={styles.imagePlaceholderText}>
-										You are not following anyone
-									</Text>
-								</View>
-							</View>
-						) : (
-						<SectionList
-							sections={[{ title: 'Followed Players', data: playerNames }]}
-							renderItem={({ item, index }) => (
-								<View style={styles.playerView}>
-									<Image
-										style={styles.playerIcon}
-										source={{ uri: playerIcons[index] }}
-										transition={false}
-									/>
-									<View style={styles.playerText}>
-										<Text style={styles.item}>{item}</Text>
-										<TouchableHighlight
-											onPress={() => unfollowPlayer(item)}
-											style={styles.button}
-										>
-											<Text style={styles.buttonText}>Unfollow</Text>
-										</TouchableHighlight>
-									</View>
-								</View>
-							)}
-							renderSectionHeader={({ section }) => (
-								<Text style={styles.sectionHeader}>{section.title}</Text>
-							)}
-							keyExtractor={(item, index) => index}
-						/>
-						)}
+            {handleErr === true ? (
+              <View style={styles.imagePlaceholderContainer}>
+                <Text style={styles.noDataSectionHeader}>
+                  Followed Players
+                </Text>
+                <View style={{marginTop: "-25%"}}>
+                  <ServerDown />
+                  <Text style={styles.imagePlaceholderText}>
+                    There was a problem fetching your data. {'\n'} Please try again later.
+                  </Text>
+                </View>
+              </View>
+            ) : (
+              playerNames.length === 0 ? (
+                <View style={styles.imagePlaceholderContainer}>
+                  <Text style={styles.noDataSectionHeader}>
+                    Followed Players
+                  </Text>
+                  <View style={{marginTop: "-25%"}}>
+                    <Void />
+                    <Text style={styles.imagePlaceholderText}>
+                      You are not following anyone
+                    </Text>
+                  </View>
+                </View>
+              ) : (
+                <SectionList
+                  sections={[{ title: 'Followed Players', data: playerNames }]}
+                  renderItem={({ item, index }) => (
+                    <Swipeable
+                      ref={updateRef}
+                      friction={2}
+                      rightThreshold={40}
+                      renderRightActions={renderRightActions}
+                    >
+                      <View style={styles.playerView}>
+                        <Image
+                          style={styles.playerIcon}
+                          uri={playerIcons[index]}
+                        />
+                        <View style={styles.playerText}>
+                          <Text style={styles.item}>{item}</Text>
+                          <TouchableHighlight
+                            onPress={() => unfollowPlayer(item)}
+                            style={styles.button}
+                          >
+                            <Text style={styles.buttonText}>Unfollow</Text>
+                          </TouchableHighlight>
+                        </View>
+                      </View>
+                    </Swipeable>
+                  )}
+                  renderSectionHeader={({ section }) => (
+                    <Text style={styles.sectionHeader}>{section.title}</Text>
+                  )}
+                  keyExtractor={(item, index) => index}
+                />
+              )
+            )}
 					</View>
 				</View>
 			)}
@@ -186,7 +244,13 @@ const styles = StyleSheet.create({
 		textAlign: 'center',
 		color: '#F1FAEE',
 		top: '10%'
-	},
+  },
+  rightAction: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    height: 75,
+  },
 });
 
 export default FollowedScreen;

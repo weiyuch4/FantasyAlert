@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import {
 	Image,
 	SectionList,
@@ -8,34 +8,16 @@ import {
 	View,
 	TouchableHighlight,
 } from 'react-native';
-import { API_URL } from 'react-native-dotenv';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SearchApp from './SearchBar';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Icon } from 'react-native-elements';
+import Context from './Context';
 
 const TeamScreen = ({ navigation }) => {
-	const [teams, setTeams] = useState({});
 
-	const callAPI = () => {
-		fetch(`${API_URL}/testTeamUrl`, {
-			method: 'GET',
-		})
-			.then(res => {
-				if (res.ok) {
-					res.json().then(res => setTeams({ ...res }));
-				} else {
-					throw new Error('Something went wrong');
-				}
-			})
-			.catch(error => {
-				console.log(error);
-			});
-	};
-
-	useEffect(() => {
-		callAPI();
-	}, []);
+  const data = useContext(Context);
+  const teams = data.teams;
 
 	const teamNames = Object.keys(teams);
 
@@ -77,53 +59,57 @@ const TeamScreen = ({ navigation }) => {
 	};
 
 	return (
-		<View style={{ flex: 1 }}>
-			<View
-				style={{
-					width: '100%',
-					height: '100%',
-					backgroundColor: '#6d6875',
-					flex: 1,
-				}}
-			>
-				<StatusBar style="auto" />
-				<SearchApp
-					style={{ backgroundColor: '#457B9D' }}
-					navigation={navigation}
-				/>
-				<SectionList
-					sections={[
-						{ title: 'Atlantic', data: teamNames.slice(0, 5) },
-						{ title: 'Central', data: teamNames.slice(5, 10) },
-						{ title: 'Northwest', data: teamNames.slice(10, 15) },
-						{ title: 'Pacific', data: teamNames.slice(15, 20) },
-						{ title: 'Southeast', data: teamNames.slice(20, 25) },
-						{ title: 'Southwest', data: teamNames.slice(25, 30) },
-					]}
-					renderItem={({ item, index }) => (
-						<TouchableHighlight
-							onPress={() => {
-								onPressButton(item);
-							}}
-							underlayColor="white"
-						>
-							<View style={styles.playerView}>
-								<Image
-									style={styles.playerIcon}
-									source={teamLogos[item]}
-									transition={false}
-								/>
-								<Text style={styles.item}>{item}</Text>
-							</View>
-						</TouchableHighlight>
-					)}
-					renderSectionHeader={({ section }) => (
-						<Text style={styles.sectionHeader}>{section.title}</Text>
-					)}
-					keyExtractor={(item, index) => index}
-				/>
-			</View>
-		</View>
+    <Context.Consumer>
+			{context => (
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#6d6875',
+              flex: 1,
+            }}
+          >
+            <StatusBar style="auto" />
+            <SearchApp
+              style={{ backgroundColor: '#457B9D' }}
+              navigation={navigation}
+            />
+            <SectionList
+              sections={[
+                { title: 'Atlantic', data: teamNames.slice(0, 5) },
+                { title: 'Central', data: teamNames.slice(5, 10) },
+                { title: 'Northwest', data: teamNames.slice(10, 15) },
+                { title: 'Pacific', data: teamNames.slice(15, 20) },
+                { title: 'Southeast', data: teamNames.slice(20, 25) },
+                { title: 'Southwest', data: teamNames.slice(25, 30) },
+              ]}
+              renderItem={({ item, index }) => (
+                <TouchableHighlight
+                  onPress={() => {
+                    onPressButton(item);
+                  }}
+                  underlayColor="white"
+                >
+                  <View style={styles.playerView}>
+                    <Image
+                      style={styles.playerIcon}
+                      source={teamLogos[item]}
+                      transition={false}
+                    />
+                    <Text style={styles.item}>{item}</Text>
+                  </View>
+                </TouchableHighlight>
+              )}
+              renderSectionHeader={({ section }) => (
+                <Text style={styles.sectionHeader}>{section.title}</Text>
+              )}
+              keyExtractor={(item, index) => index}
+            />
+          </View>
+        </View>
+      )}
+    </Context.Consumer>
 	);
 };
 

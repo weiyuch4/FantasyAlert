@@ -87,10 +87,9 @@ const styles = StyleSheet.create({
 	settinglist: {
 		display: 'flex',
 		flexDirection: 'row',
-		//borderBottomColor: '#cdcacc',
-		//borderBottomWidth: 1,
-		margin: 15,
-		padding: 8,
+		borderBottomColor: '#cdcacc',
+		borderBottomWidth: 1,
+		padding: 20,
 		justifyContent: 'space-between',
 		
 	},

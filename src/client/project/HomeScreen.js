@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
 	Image,
 	SectionList,
@@ -7,11 +7,11 @@ import {
 	Text,
 	View,
 	FlatList,
+	RefreshControl,
 } from 'react-native';
 import SearchApp from './SearchBar';
 import getAllPlayerStatus from './PlayerStatus';
 import Context from './Context';
-import { RefreshControl } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import { Icon } from 'react-native-elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,11 +19,12 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import GreekFreak from './illustrations/GreekFreak';
 import RefreshingBeverage from './illustrations/RefreshingBeverage';
 import GameDay from './illustrations/GameDay';
+import ServerDown from './illustrations/ServerDown';
 
 const HomeScreen = ({ navigation }) => {
 	const [refreshing, setRefreshing] = useState(false);
 
-	const wait = timeout => {
+	const wait = (timeout) => {
 		return new Promise(resolve => {
 			setTimeout(resolve, timeout);
 		});
@@ -31,31 +32,55 @@ const HomeScreen = ({ navigation }) => {
 
 	const data = useContext(Context);
 
-	let players = getAllPlayerStatus(data.followed),
-		playerOn = [],
-		playerOff = [],
-		playerNoGame = [];
+	let players = data.followedStatus,
+			playerOn = [],
+			playerOff = [],
+      playerNoGame = [];
 
-	for (let player in players) {
-		if (players[player].status === 'on') {
-			playerOn.push(player);
-		} else if (
-			players[player].status === 'off' ||
-			players[player].status === 'not-started'
-		) {
-			playerOff.push(player);
-		} else {
-			playerNoGame.push(player);
+  let handleErr = false;
+
+	const updateStatus = (players) => {
+		for (let player in players) {
+			if (players[player].status === 'on') {
+				playerOn.push(player);
+			} else if (
+				players[player].status === 'off' ||
+				players[player].status === 'not-started'
+			) {
+				playerOff.push(player);
+			} else {
+				playerNoGame.push(player);
+			}
 		}
-	}
+  };
+  
+  if (players.handle) {
+    handleErr = true;
+  } else {
+    updateStatus(players);
+  }
 
 	const onRefresh = useCallback(() => {
 		setRefreshing(true);
 		wait(2000).then(() => {
 			setRefreshing(false);
-			data.setUpdate(!data.update);
+			players = data.followedStatus;
+			playerOn = [];
+			playerOff = [];
+			playerNoGame = [];
+			updateStatus(players);
+			//console.log('updated!');
 		});
 	}, []);
+
+	useEffect(() => {
+		players = data.followedStatus;
+		playerOn = [];
+		playerOff = [];
+		playerNoGame = [];
+		updateStatus(players);
+		//console.log('updated');
+	}, [data.followedStatus]);
 
 	const Tab = createMaterialTopTabNavigator();
 
@@ -67,47 +92,57 @@ const HomeScreen = ({ navigation }) => {
 					height: '100%',
 					backgroundColor: '#6d6875',
 					flex: 7,
-				}}
+        }}
 			>
-				{playerOn.length === 0 ? (
-					<View style={styles.imagePlaceholderContainer}>
+        {handleErr === true ? (
+          <View style={styles.imagePlaceholderContainer}>
 						<View style={{marginTop: "-25%"}}>
-							<GreekFreak />
+							<ServerDown />
 							<Text style={styles.imagePlaceholderText}>
-								None of the players you follow are on the court
+								There was a problem fetching your data. {'\n'} Please try again later.
 							</Text>
 						</View>
 					</View>
-				) : (
-					<FlatList
-						data={playerOn}
-						renderItem={({ item }) => (
-							<View style={styles.playerView}>
-								<Image
-									style={styles.playerIcon}
-									source={{ uri: players[item].icon }}
-									transition={false}
-								/>
-								<View style={styles.playerText}>
-									<Text style={styles.item}>{item}</Text>
-									<Text style={styles.itemDetail}>
-										{players[item].quarter}
-										{players[item].time}
-									</Text>
-								</View>
-							</View>
-						)}
-						keyExtractor={(item, index) => index.toString()}
-						refreshControl={
-							<RefreshControl
-								refreshing={refreshing}
-								onRefresh={onRefresh}
-								tintColor="#F1FAEE"
-							/>
-						}
-						extraData={data.update}
-					/>
-				)}
+        ) : (
+          playerOn.length === 0 ? (
+            <View style={styles.imagePlaceholderContainer}>
+              <View style={{marginTop: "-25%"}}>
+                <GreekFreak />
+                <Text style={styles.imagePlaceholderText}>
+                  None of the players you follow are on the court
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <FlatList
+              data={playerOn}
+              renderItem={({ item }) => (
+                <View style={styles.playerView}>
+                  <Image
+                    style={styles.playerIcon}
+                    source={{ uri: players[item].icon }}
+                    transition={false}
+                  />
+                  <View style={styles.playerText}>
+                    <Text style={styles.item}>{item}</Text>
+                    <Text style={styles.itemDetail}>
+                      {players[item].quarter}
+                      {players[item].time}
+                    </Text>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor="#F1FAEE"
+                />
+              }
+            />
+          )
+        )}
 			</View>
 		);
 	};
@@ -122,37 +157,55 @@ const HomeScreen = ({ navigation }) => {
 					flex: 7,
 				}}
 			>
-				{playerOff.length === 0 ? (
-					<View style={styles.imagePlaceholderContainer}>
+        {handleErr === true ? (
+          <View style={styles.imagePlaceholderContainer}>
 						<View style={{marginTop: "-25%"}}>
-							<RefreshingBeverage />
+							<ServerDown />
 							<Text style={styles.imagePlaceholderText}>
-								None of the players you follow are off the court
+								There was a problem fetching your data. {'\n'} Please try again later.
 							</Text>
 						</View>
 					</View>
-				) : (
-					<FlatList
-						data={playerOff}
-						renderItem={({ item }) => (
-							<View style={styles.playerView}>
-								<Image
-									style={styles.playerIcon}
-									source={{ uri: players[item].icon }}
-									transition={false}
-								/>
-								<View style={styles.playerText}>
-									<Text style={styles.item}>{item}</Text>
-									<Text style={styles.itemDetail}>
-										{players[item].quarter}
-										{players[item].time}
-									</Text>
-								</View>
-							</View>
-						)}
-						keyExtractor={(item, index) => index.toString()}
-					/>
-				)}
+        ) : (
+          playerOff.length === 0 ? (
+            <View style={styles.imagePlaceholderContainer}>
+              <View style={{marginTop: "-25%"}}>
+                <RefreshingBeverage />
+                <Text style={styles.imagePlaceholderText}>
+                  None of the players you follow are off the court
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <FlatList
+              data={playerOff}
+              renderItem={({ item }) => (
+                <View style={styles.playerView}>
+                  <Image
+                    style={styles.playerIcon}
+                    source={{ uri: players[item].icon }}
+                    transition={false}
+                  />
+                  <View style={styles.playerText}>
+                    <Text style={styles.item}>{item}</Text>
+                    <Text style={styles.itemDetail}>
+                      {players[item].quarter}
+                      {players[item].time}
+                    </Text>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor="#F1FAEE"
+                />
+              }
+            />
+          )
+        )}
 			</View>
 		);
 	};
@@ -167,37 +220,55 @@ const HomeScreen = ({ navigation }) => {
 					flex: 7,
 				}}
 			>
-				{playerNoGame.length === 0 ? (
-					<View style={styles.imagePlaceholderContainer}>
+        {handleErr === true ? (
+          <View style={styles.imagePlaceholderContainer}>
 						<View style={{marginTop: "-25%"}}>
-							<GameDay />
+							<ServerDown />
 							<Text style={styles.imagePlaceholderText}>
-								Every player you follow have a game today
+								There was a problem fetching your data. {'\n'} Please try again later.
 							</Text>
 						</View>
 					</View>
-				) : (
-					<FlatList
-						data={playerNoGame}
-						renderItem={({ item }) => (
-							<View style={styles.playerView}>
-								<Image
-									style={styles.playerIcon}
-									source={{ uri: players[item].icon }}
-									transition={false}
-								/>
-								<View style={styles.playerText}>
-									<Text style={styles.item}>{item}</Text>
-									<Text style={styles.itemDetail}>
-										{players[item].quarter}
-										{players[item].time}
-									</Text>
-								</View>
-							</View>
-						)}
-						keyExtractor={(item, index) => index.toString()}
-					/>
-				)}
+        ) : (
+          playerNoGame.length === 0 ? (
+            <View style={styles.imagePlaceholderContainer}>
+              <View style={{marginTop: "-25%"}}>
+                <GameDay />
+                <Text style={styles.imagePlaceholderText}>
+                  Every player you follow have a game today
+                </Text>
+              </View>
+            </View>
+          ) : (
+            <FlatList
+              data={playerNoGame}
+              renderItem={({ item }) => (
+                <View style={styles.playerView}>
+                  <Image
+                    style={styles.playerIcon}
+                    source={{ uri: players[item].icon }}
+                    transition={false}
+                  />
+                  <View style={styles.playerText}>
+                    <Text style={styles.item}>{item}</Text>
+                    <Text style={styles.itemDetail}>
+                      {players[item].quarter}
+                      {players[item].time}
+                    </Text>
+                  </View>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefresh}
+                  tintColor="#F1FAEE"
+                />
+              }
+            />
+          )
+        )}
 			</View>
 		);
 	};

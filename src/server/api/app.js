@@ -7,12 +7,12 @@ var cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var testAPIRouter = require('./routes/testAPI');
 var testScraperRouter = require('./routes/testScraper');
 var testPlayerRouter = require('./routes/testPlayer');
 var testGameRouter = require('./routes/testGame');
 var testTeamUrlRouter = require('./routes/testTeamUrl');
 var testRosterRouter = require('./routes/testRoster');
+var testUpdateSFRosterRouter = require('./routes/testUpdateSFRoster')
 
 var app = express();
 
@@ -29,12 +29,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/testAPI', testAPIRouter);
 app.use('/testScraper', testScraperRouter);
 app.use('/testPlayer', testPlayerRouter);
 app.use('/testGame', testGameRouter);
 app.use('/testTeamUrl', testTeamUrlRouter);
 app.use('/testRoster', testRosterRouter);
+app.use('/testUpdateSFRoster', testUpdateSFRosterRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

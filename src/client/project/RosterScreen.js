@@ -2,8 +2,6 @@ import { BaseRouter } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState, useContext } from 'react';
 import {
-	Button,
-	Image,
 	SectionList,
 	StyleSheet,
 	Text,
@@ -18,12 +16,14 @@ import ContentLoader, { Bullets } from 'react-native-easy-content-loader';
 import { SafeAreaView } from 'react-navigation';
 import { ScrollView, Swipeable } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import CachedImage from 'react-native-expo-cached-image';
+import { Image } from 'react-native-expo-image-cache';
 
 const RosterScreen = ({ route, navigation }) => {
 	const data = useContext(Context);
 	const allPlayerData = require('./full-roster.json');
 
-	const [roster, setRoster] = useState([]);
+  const [roster, setRoster] = useState([]);
 
 	useEffect(() => {
 		callRoster();
@@ -68,7 +68,7 @@ const RosterScreen = ({ route, navigation }) => {
 		} else {
 			return 'Follow';
 		}
-	};
+  };
 
 	return (
 		<Context.Consumer>
@@ -92,9 +92,8 @@ const RosterScreen = ({ route, navigation }) => {
 							renderItem={({ item, index }) => (
 								<View style={styles.playerView}>
 									<Image
-										style={styles.playerIcon}
-										source={{ uri: Object.values(item)[0] }}
-										transition={false}
+                    style={styles.playerIcon}
+										uri={Object.values(item)[0]}
 									/>
 									<View style={styles.playerText}>
 										<Text style={styles.item}>{Object.keys(item)[0]}</Text>

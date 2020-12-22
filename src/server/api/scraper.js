@@ -8,23 +8,23 @@ const getUrl = (gameId) => {
 
 const fetchData = async (gameId) => {
   try {
-      const result = await axios.get(getUrl(gameId));
-      return result.data;
+    const result = await axios.get(getUrl(gameId));
+    return result.data;
   } catch (err) {
-      console.error(err);
+    console.error(err);
   }
 };
 
 const getResults = async (gameId) => {
   try {
-      const data = await fetchData(gameId);
-      const htmlResults = data.content.html;
+    const data = await fetchData(gameId);
+    const htmlResults = data.content.html;
 
-      const $ = cheerio.load(htmlResults);
-      
-      return $;
+    const $ = cheerio.load(htmlResults);
+
+    return $;
   } catch (err) {
-      console.error(err);
+    console.error(err);
   }
 };
 

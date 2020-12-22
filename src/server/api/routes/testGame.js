@@ -1,13 +1,14 @@
 const express = require('express');
+
 const router = express.Router();
 const getAllGameId = require('../game');
 
-router.get('/', async function(req, res, next) {
+router.get('/', async (req, res) => {
   try {
-      const result = await getAllGameId();
-      res.send(result);
+    const result = await getAllGameId();
+    res.send(result);
   } catch (err) {
-      console.error(err);
+    console.error(err);
   }
 });
 

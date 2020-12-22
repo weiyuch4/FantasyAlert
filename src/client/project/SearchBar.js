@@ -30,9 +30,9 @@ const SearchApp = props => {
 	const inputRef = useRef(null);
 
 	const inputBoxTranslateX = useRef(new Value(width)).current,
-		backButtonOpacity = useRef(new Value(0)).current,
-		contentTranslateY = useRef(new Value(height)).current,
-		contentOpacity = useRef(new Value(0)).current;
+				backButtonOpacity = useRef(new Value(0)).current,
+				contentTranslateY = useRef(new Value(height)).current,
+				contentOpacity = useRef(new Value(0)).current;
 
 	const data = useContext(Context);
 	const allPlayerData = require('./search-full-roster.json');

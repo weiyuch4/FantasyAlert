@@ -1,11 +1,11 @@
 const express = require('express');
 
 const router = express.Router();
-const getTeamsUrl = require('../teamUrl');
+const updateSearchFullRoster = require('../updateSearchFullRoster');
 
 router.get('/', async (req, res) => {
   try {
-    const result = await getTeamsUrl();
+    const result = await updateSearchFullRoster();
     res.send(result);
   } catch (err) {
     console.error(err);

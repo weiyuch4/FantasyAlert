@@ -1,13 +1,14 @@
 const express = require('express');
+
 const router = express.Router();
 const getAllPlayers = require('../roster');
 
-router.get('/', async function(req, res, next) {
+router.get('/', async (req, res) => {
   try {
-      const result = await getAllPlayers();
-      res.send(result);
+    const result = await getAllPlayers();
+    res.send(result);
   } catch (err) {
-      console.error(err);
+    console.error(err);
   }
 });
 

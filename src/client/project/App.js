@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
 	createDrawerNavigator,
 	DrawerContentScrollView,
 	DrawerItem,
 } from '@react-navigation/drawer';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import HomeScreen from './HomeScreen';
 import TeamScreen from './TeamScreen';
@@ -15,6 +15,10 @@ import Context from './Context';
 import FollowedScreen from './FollowedScreen';
 import SettingsScreen from './SettingsScreen';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import getAllPlayerStatus from './PlayerStatus';
+import getTeams from './Team';
+import dailyUpdate from './DailyUpdate';
+import getFullRoster from './GetFullRoster';
 
 const CustomDrawerContent = props => {
 	return (
@@ -76,10 +80,15 @@ const CustomDrawerContent = props => {
 
 const Drawer = createDrawerNavigator();
 
+const allPlayerData = require('./search-full-roster.json');
+const allPlayerImg = allPlayerData.map(player => Object.values(player)[0][1]);
+
 const App = (props) => {
 	const [followed, setFollowed] = useState({});
-	const [update, setUpdate] = useState(false);
 	const [isLoaded, setIsLoaded] = useState(false);
+  const [followedStatus, setFollowedStatus] = useState({});
+  const [teams, setTeams] = useState({});
+  const [fullRoster, setFullRoster] = useState({});
 	
 	const loadData = async () => {
 		try {
@@ -90,15 +99,63 @@ const App = (props) => {
 		} catch (err) {
 			alert(err);
 		}
-	};
+  };
+
+  const loadFullRoster = async () => {
+
+    getFullRoster(setFullRoster).then(res => console.log(fullRoster));
+
+    /*
+		try {
+      const jsonValue = await AsyncStorage.getItem('@roster3');
+      console.log(jsonValue);
+			if (jsonValue !== null) {
+        console.log('not null');
+        setFullRoster(JSON.parse(jsonValue));
+			} else {
+        console.log('null');
+        await getFullRoster(fullRoster, setFullRoster);
+        console.log(fullRoster);
+        const jsonRoster = JSON.stringify(fullRoster);
+        await AsyncStorage.setItem('@roster3', jsonRoster);
+        setFullRoster(fullRoster);
+        console.log('set again');
+        console.log(fullRoster);
+      }
+		} catch (err) {
+			alert(err);
+    }
+    */
+  };
 	
 	useEffect(() => {
-		loadData();
-		setIsLoaded(true);
+    loadData();
+    //loadFullRoster();
+    //dailyUpdate();
+    getTeams(setTeams);
+    setIsLoaded(true);
 	}, []);
+	
+	useEffect(() => {
+		getAllPlayerStatus(followed, setFollowedStatus);
+		const interval = setInterval(() => {
+			getAllPlayerStatus(followed, setFollowedStatus);
+			//console.log('refresh every 10 sec');
+		}, 10000);
+		return () => clearInterval(interval);
+  }, [followed]);
+	
 
 	return (
-		<Context.Provider value={{ followed, setFollowed, update, setUpdate, isLoaded, setIsLoaded }}>
+    <Context.Provider 
+      value={{ 
+        followed, setFollowed, 
+        isLoaded, setIsLoaded, 
+        followedStatus, setFollowedStatus,
+        teams, setTeams,
+        fullRoster, setFullRoster
+      }}
+    >
 			<NavigationContainer>
 				<Drawer.Navigator
 					initialRouteName="Home"

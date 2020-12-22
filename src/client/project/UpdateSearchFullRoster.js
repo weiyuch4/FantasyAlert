@@ -1,23 +1,27 @@
-let fs = require('fs');
+const updateSearchFullRoster = () => {
 
-const allPlayerData = require('./search-full-roster.json'),
-	allTeams = Object.keys(allPlayerData);
+  const rnfs = require('react-native-fs');
 
-let arr = [];
+  const allPlayerData = require('./full-roster.json');
+  const allTeams = Object.keys(allPlayerData);
 
-for (let i = 0; i < allTeams.length; i++) {
-	const teamName = allTeams[i],
-		teamRoster = allPlayerData[teamName];
+  const arr = [];
 
-	const newTeamRoster = teamRoster.map(player => {
-		const temp = {};
-		temp[Object.keys(player)[0]] = [teamName, Object.values(player)[0]];
-		return temp;
-	});
+  for (let i = 0; i < allTeams.length; i++) {
+    const teamName = allTeams[i],
+      teamRoster = allPlayerData[teamName];
 
-	arr = arr.concat(newTeamRoster);
-}
+    const newTeamRoster = teamRoster.map(player => {
+      const temp = {};
+      temp[Object.keys(player)[0]] = [teamName, Object.values(player)[0]];
+      return temp;
+    });
 
-fs.writeFile('search-full-roster1.json', JSON.stringify(arr), function (err) {
-	if (err) throw err;
-});
+    arr = arr.concat(newTeamRoster);
+  }
+
+  rnfs.writeFile(rnfs.DocumentDirectoryPath + '/search-full-roster-test.json', JSON.stringify(arr));
+
+};
+
+export default updateSearchFullRoster;
