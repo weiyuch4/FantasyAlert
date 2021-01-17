@@ -12,7 +12,6 @@ Dillinger uses a number of open source projects to work properly:
 * [ReactNative] - HTML enhanced for web apps!
 * [node.js] - evented I/O for the backend
 * [Express] - fast node.js network app framework [@tjholowaychuk]
-* [Django] - The web framework for perfectionists with deadlines.
 
 
 
@@ -20,4 +19,3 @@ Dillinger uses a number of open source projects to work properly:
    [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
    [express]: <http://expressjs.com>
    [ReactNative]: <https://reactnative.dev/>
-   [Django]: <https://www.djangoproject.com/>
